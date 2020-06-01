@@ -33,28 +33,28 @@ exportSpatials(mainOutput,folderName = "MainOutput")
 ##Addins: Copy x to clipboard, paste to excel, pick units ~1km in length:
 
 generateCrossSections(mainChannel %>% dplyr::slice(1:2),
-                      xSectionDensity = units::as_units(200,"m"),
+                      xSectionDensity = units::as_units(10,"m"),
                       googleZoom=16, xSectionLength = 150,
                       cut1Dir = "W", cut2Dir = "E") %>%
-  allAtOnce("mainChannelA150x200.pdf",doExportSpatial = TRUE)
+  allAtOnce("mainChannelA150x10.pdf",doExportSpatial = TRUE)
 
-generateCrossSections(mainChannel %>% slice(3:4),
-                      xSectionDensity = units::as_units(20,"m"),
+generateCrossSections(mainChannel %>% dplyr::slice(3:4),
+                      xSectionDensity = units::as_units(10,"m"),
                       googleZoom=16, xSectionLength = 150,
                       cut1Dir = "W", cut2Dir = "S") %>%
-  allAtOnce("mainChannelB.pdf",doExportSpatial = TRUE)
+  allAtOnce("mainChannelB150x10.pdf",doExportSpatial = TRUE)
 
-generateCrossSections(mainChannel %>% slice(5:6),
-                      xSectionDensity = units::as_units(20,"m"),
+generateCrossSections(mainChannel %>% dplyr::slice(5:6),
+                      xSectionDensity = units::as_units(10,"m"),
                       googleZoom=16, xSectionLength = 150,
                       cut1Dir = "W", cut2Dir = "S") %>%
-  allAtOnce("mainChannelC.pdf",doExportSpatial = TRUE)
+  allAtOnce("mainChannelC150x10.pdf",doExportSpatial = TRUE)
 
-generateCrossSections(mainChannel %>% slice(7:8),
-                      xSectionDensity = units::as_units(20,"m"),
+generateCrossSections(mainChannel %>% dplyr::slice(7:8),
+                      xSectionDensity = units::as_units(10,"m"),
                       googleZoom=16, xSectionLength = 150,
                       cut1Dir = "W", cut2Dir = "S") %>%
-  allAtOnce("mainChannelD.pdf",doExportSpatial = TRUE)
+  allAtOnce("mainChannelD150x10.pdf",doExportSpatial = TRUE)
 
 # generateCrossSections(mainChannel %>% slice(1:8),
 #                       xSectionDensity = units::as_units(20,"m"),
@@ -62,17 +62,17 @@ generateCrossSections(mainChannel %>% slice(7:8),
 #                       cut1Dir = "N", cut2Dir = "S") %>%
 #   allAtOnce("mainChannelA-D.pdf",doExportSpatial = TRUE)
 
-generateCrossSections(mainChannel %>% slice(9:12),
-                      xSectionDensity = units::as_units(20,"m"),
+generateCrossSections(mainChannel %>% dplyr::slice(9:12),
+                      xSectionDensity = units::as_units(10,"m"),
                       googleZoom=16, xSectionLength = 150,
                       cut1Dir = "N", cut2Dir = "S") %>%
-  allAtOnce("mainChannelE.pdf",doExportSpatial = TRUE)
+  allAtOnce("mainChannelE150x10.pdf",doExportSpatial = TRUE)
 
-mainF <- generateCrossSections(mainChannel %>% slice(13:14),
-                               xSectionDensity = units::as_units(20,"m"),
+mainF <- generateCrossSections(mainChannel %>% dplyr::slice(13:14),
+                               xSectionDensity = units::as_units(10,"m"),
                                googleZoom=16, xSectionLength = 150,
                                cut1Dir = "W", cut2Dir = "E") %>%
-  allAtOnce("mainChannelF.pdf",doExportSpatial = TRUE,returnObject = TRUE)
+  allAtOnce("mainChannelF150x10.pdf",doExportSpatial = TRUE,returnObject = TRUE)
 
 # generateCrossSections(mainChannel %>% slice(9:15),
 #                       xSectionDensity = units::as_units(15,"m"),
@@ -80,11 +80,11 @@ mainF <- generateCrossSections(mainChannel %>% slice(13:14),
 #                       cut1Dir = "N", cut2Dir = "E") %>%
 #   allAtOnce("mainChannelE-G.pdf",doExportSpatial = TRUE)
 
-generateCrossSections(mainChannel %>% slice(15:16),
-                      xSectionDensity = units::as_units(20,"m"),
+generateCrossSections(mainChannel %>% dplyr::slice(15:16),
+                      xSectionDensity = units::as_units(10,"m"),
                       googleZoom=16, xSectionLength = 150,
                       cut1Dir = "W", cut2Dir = "E") %>%
-  allAtOnce("mainChannelG.pdf",doExportSpatial = TRUE)
+  allAtOnce("mainChannelG150x10.pdf",doExportSpatial = TRUE)
 
 
 
@@ -153,7 +153,7 @@ woodyFingerN3 <- sf::read_sf("GeoData/STREAM CHANNELS.shp") %>%
 
 #WoodyFingerN4.shp:---------------------------------------------------------
 woodyFingerN4 <- sf::read_sf("GeoData/STREAM CHANNELS.shp") %>%
-  filter(arcid %in% c(1638,1741)) %>%
+  dplyr::filter(arcid %in% c(1638,1741)) %>%
   sf::st_transform(crs = 26910) %>%
   generateCrossSections(googleZoom=16,
                         xSectionLength = 150,
@@ -165,7 +165,7 @@ woodyFingerN4 <- sf::read_sf("GeoData/STREAM CHANNELS.shp") %>%
 
 #WoodyFingerN5.shp:---------------------------------------------------------
 woodyFingerN5 <- sf::read_sf("GeoData/STREAM CHANNELS.shp") %>%
-  filter(arcid %in% c(1748,1761,1789,1905)) %>%
+  dplyr::filter(arcid %in% c(1748,1761,1789,1905)) %>%
   sf::st_transform(crs = 26910) %>%
   generateCrossSections(googleZoom=16,
                         xSectionLength = 150,
