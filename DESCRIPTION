@@ -1,18 +1,23 @@
 Package: ProcessSpace
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Adam Cummings (USFS PSW)
+Title: A package to process LiDAR for meadow restoration visualizations.
+Version: 0.1.001
+Date: 2020-06-01
+Author: Adam Cummings <adam.cummings@usda.gov>
 Maintainer: Adam Cummings <adam.cummings@usda.gov>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Description: This package uses high resolution LiDAR terrain data and a
+     stream flow network shapefile to generate detrended elevation rasters and
+     polygons showing potential process space (space potentially available to
+     hydrologic processes with only minor stream flow perterbations). These
+     spatial data are exported as KMZ files that enable 3D interaction in
+     Google Earth. 
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2
 Imports: 
     magrittr,
-    patchwork,
+    cowplot,
     ggplot2,
     ggthemes,
     ggmap,

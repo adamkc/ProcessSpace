@@ -93,7 +93,7 @@ buildXSectionPlot <- function(transectObject,
 
   transectObject <- mapPlotter(transectObject,streamChannelFile=streamChannelFile)
 
-  plotToSave <-  transectObject$mapPlot + transectPlot
+  plotToSave <-  cowplot::plot_grid(transectObject$mapPlot, transectPlot)
 
 
 

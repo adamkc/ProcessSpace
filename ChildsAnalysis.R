@@ -1,6 +1,6 @@
 
 ######################
-
+#r <- raster(system.file("external/test.grd", package="raster"))
 library(ProcessSpace)
 library(ggmap) # necessary to load credentials.
 # library(tidyverse)
