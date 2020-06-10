@@ -1,8 +1,8 @@
 #' addStreamChannels
 #'
-#' @param transectObject
-#' @param sampleDensity
-#' @param rasterDir
+#' @param transectObject Object created by the \code{generateCrossSections} function
+#' @param sampleDensity The precision of the
+#' @param rasterDir The file location of the DEM file.
 #'
 #' @return
 #' @export

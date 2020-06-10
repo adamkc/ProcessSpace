@@ -8,7 +8,8 @@ addStreamChannels(
   transectObject,
   sampleDensity = units::as_units(3, "m"),
   rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
-  streamChannelFile = "GeoData/STREAM CHANNELS.shp"
+  streamChannelFile = "GeoData/STREAM CHANNELS.shp",
+  ...
 )
 }
 \arguments{

@@ -7,7 +7,8 @@
 rasterPlotter(
   transectObject,
   rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
-  interpSmoothness = "Smooth"
+  interpSmoothness = "Smooth",
+  ...
 )
 }
 \arguments{

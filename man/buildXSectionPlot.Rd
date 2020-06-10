@@ -8,7 +8,9 @@ buildXSectionPlot(
   transectObject,
   plotFileName = "test.png",
   returnData = TRUE,
-  verticalCutoff = 4
+  verticalCutoff = 4,
+  streamChannelFile = "GeoData/STREAM CHANNELS.shp",
+  ...
 )
 }
 \arguments{

@@ -1,11 +1,9 @@
 #' addProcessSpace
 #'
-#' @param transectObject
+#' @param transectObject Object created by the \code{generateCrossSections} function
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return transectObject that can be passed on to other functions or passed to exportSpatials
+
 
 addProcessSpace <- function(transectObject){
   cat(crayon::green("Calculating Process Space Polygons"))

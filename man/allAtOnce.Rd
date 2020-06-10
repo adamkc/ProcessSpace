@@ -9,10 +9,13 @@ allAtOnce(
   outputFilename,
   detrendElevs = TRUE,
   returnObject = FALSE,
-  doExportSpatial = FALSE
+  doExportSpatial = FALSE,
+  ...
 )
 }
 \arguments{
+\item{transectObject}{Object created by the \code{generateCrossSections} function}
+
 \item{doExportSpatial}{}
 }
 \value{

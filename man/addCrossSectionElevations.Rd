@@ -6,11 +6,14 @@
 \usage{
 addCrossSectionElevations(
   transectObject,
-  rasterDir = "GeoData/Raster/ChildsDEM_m.tif"
+  rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
+  ...
 )
 }
 \arguments{
-\item{rasterDir}{}
+\item{transectObject}{Object created by the \code{generateCrossSections} function}
+
+\item{rasterDir}{Directory containing the LiDAR raster dataset}
 }
 \value{
 

@@ -4,7 +4,7 @@
 \alias{addTopoLines}
 \title{addTopoLines}
 \usage{
-addTopoLines(transectObject, rasterDir = "GeoData/Raster/ChildsDEM_m.tif")
+addTopoLines(transectObject, rasterDir = "GeoData/Raster/ChildsDEM_m.tif", ...)
 }
 \arguments{
 \item{rasterDir}{}

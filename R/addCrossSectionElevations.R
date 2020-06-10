@@ -3,10 +3,9 @@
 #' @param transectObject Object created by the \code{generateCrossSections} function
 #' @param rasterDir Directory containing the LiDAR raster dataset
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return transectObject with the cross section elevations added.
+
+
 addCrossSectionElevations <- function(transectObject,
                                       rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
                                       ...){

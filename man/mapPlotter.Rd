@@ -4,7 +4,7 @@
 \alias{mapPlotter}
 \title{mapPlotter}
 \usage{
-mapPlotter(transectObject, returnData = TRUE)
+mapPlotter(transectObject, returnData = TRUE, streamChannelFile, ...)
 }
 \arguments{
 \item{returnData}{}

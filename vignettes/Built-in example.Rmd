@@ -1,0 +1,78 @@
+---
+title: "Built-in example"
+author: "Adam Cummings"
+date: "6/9/2020"
+output: html_document
+---
+
+
+# Load the required packages:
+
+```{r setup, include=FALSE}
+library(ProcessSpace)
+library(ggmap)
+library(raster)
+```
+
+# load the Data files and check them
+
+```{r}
+rasterDir <- system.file("external/raster.tif", package="ProcessSpace")
+streamsDir <- system.file("external/streams.shp", package="ProcessSpace")
+r <- raster(rasterDir)
+streams <- sf::read_sf(streamsDir)
+
+s <- raster::terrain(r, opt="slope")
+a <- raster::terrain(r, opt="aspect")
+h <- raster::hillShade(s,a)
+h %>% rasterToPoints() %>% data.frame() %>% 
+  ggplot() + geom_tile(aes(x=x,y=y,fill=layer),show.legend = FALSE) + geom_sf(data=streams) +
+  geom_sf_label(data=streams,aes(label=LINKNO),size=3,
+                label.padding=unit(.1,"lines")) +
+  scale_fill_viridis_c()
+
+```
+
+We like the look of stream segments 12, 20, and 19 for further investigation
+
+```{r,fig.height=3,fig.width=5}
+targetStream <- streams %>% dplyr::filter(LINKNO %in% c(12,20,19))
+#Check that you grabbed the right streams:
+targetStream %>% ggplot() + geom_sf()
+```
+
+# Lets run it through the tool!
+
+## First, generate the cross sections:
+
+This places evenly spaced points along the selected stream file at the interval
+selected. Then it draws semi-permendicular cross sections at each point at for the length given. You need to indicate the general flow direction of the stream with cut1Dir and cut2Dir.  If the stream flows West to East provide "W" and "E", if it flows North to East provide "N", "E"
+
+```{r}
+outputObject <- targetStream %>%
+  generateCrossSections(xSectionDensity = units::as_units(50,"m"),
+                        googleZoom=16,
+                        xSectionLength = units::as_units(100,"m"),
+                        cut1Dir = "W",
+                        cut2Dir = "E")
+
+outputObject$satImage %>% ggmap()
+```
+
+## Second, run it through a series of manipulations:
+
+```{r}
+transectObject <- outputObject %>%
+  addTopoLines(rasterDir = rasterDir) %>%
+  addStreamChannels(rasterDir = rasterDir,streamChannelFile = streamsDir) %>%
+  addCrossSectionElevations(rasterDir = rasterDir) %>%
+  addProcessSpace() %>%
+  buildXSectionPlot(plotFileName = "exampleOutput.pdf",streamChannelFile = streamsDir) %>%
+  rasterPlotter(rasterDir = rasterDir)
+```
+
+## Then expor the results as a comprehensive KMZ file:
+
+```{r}
+exportSpatials(transectObject,sectionName = "exampleOutput")
+```

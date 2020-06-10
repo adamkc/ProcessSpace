@@ -20,9 +20,6 @@ allAtOnce <- function(transectObject,
   suppressWarnings(
     suppressMessages({
       transectObject <- transectObject %>%
-        # mapPlotter() %>%
-        #exportSpatials(folderName = "finger1b")
-        #longitudinalElevation(plotFileName = "Finger1LongitudinalPIPE.png") %>%
         addTopoLines(...) %>%
         addStreamChannels(...) %>%
         addCrossSectionElevations(...) %>%

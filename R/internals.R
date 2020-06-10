@@ -94,7 +94,8 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
 
   temp <- transectObject$XSectionPlotData %>%
     data.frame()
-
+  numPlots <- length(unique(temp$Transect))
+  cat(crayon::yellow(sprintf("There are %s ggplots being generated",numPlots)))
   for(i in unique(temp$Transect)){
     temp %>% dplyr::filter(Transect==i) %>% plotter()
   }
