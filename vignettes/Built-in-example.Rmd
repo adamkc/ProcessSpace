@@ -3,6 +3,10 @@ title: "Built-in example"
 author: "Adam Cummings"
 date: "6/9/2020"
 output: html_document
+resource_files:
+  - exampleOutput_temp_El_legend.png
+  - exampleOutput_temp_El.png
+  - exampleOutput-Images/Transect_3_temp_.png
 ---
 
 
@@ -86,6 +90,9 @@ transectObject$satImage %>% ggmap() +
 ## Second, run it through a series of manipulations:
 
 ```{r}
+
+##Long and version:
+
 # transectObject <- transectObject %>%
 #   addTopoLines(rasterDir = rasterDir) %>%
 #   addStreamChannels(rasterDir = rasterDir,streamChannelFile = streamsDir) %>%
@@ -94,6 +101,7 @@ transectObject$satImage %>% ggmap() +
 #   buildXSectionPlot(plotFileName = "exampleOutput.pdf",streamChannelFile = streamsDir) %>%
 #   rasterPlotter(rasterDir = rasterDir)
 
+## Short and version:
 
 transectObject <- transectObject %>% allAtOnce(outputFilename = "exampleOutput.pdf",
                              rasterDir = rasterDir,
@@ -117,15 +125,25 @@ Regions of the map with lower elevations than the stream are green, regions
 similar in elevation to the stream are blue, and regions higher than the stream
 elevation go from red to tan.
 
-![Detrended Raster](exampleOutput_temp_El_legend.png)
+```{r}
 
-![Detrended Raster](exampleOutput_temp_El.png)
+legend <- magick::image_read("exampleOutput_temp_El_legend.png")
+detrend <- magick::image_read("exampleOutput_temp_El.png")
+magick::image_mosaic(c(magick::image_background(detrend,"grey"),legend))
 
-Cross section look like this: They are plotted as though you're looking upstream
+```
+
+
+
+Cross section look like this. They are plotted as though you're looking upstream
 (which comes naturally when then raster and cross sections are viewed 3D in
 google earth.) The blue and green bands show elevations within 1ft and 2ft of
 the stream channel. This particular transect shows the stream is captured by a
 highly incised channel and the terrain slopes downhill in either perpendicular
 direction from the stream path. Perhaps this is not a natural flow path?
 
-![Cross section Plot](exampleOutput-Images/Transect_3_temp_.png)
+```{r}
+
+plot(magick::image_read("exampleOutput-Images/Transect_10_temp_.png"))
+
+```
