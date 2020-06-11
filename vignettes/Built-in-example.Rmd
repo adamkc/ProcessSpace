@@ -22,7 +22,7 @@ library(ggmap)
 library(raster)
 ```
 
-# load the Data files and check them
+# Load the Data files and check them
 
 ```{r}
 rasterDir <- system.file("external/raster.tif", package="ProcessSpace")
@@ -38,14 +38,6 @@ h %>% rasterToPoints() %>% data.frame() %>%
   geom_sf_label(data=streams,aes(label=LINKNO),size=3,
                 label.padding=unit(.1,"lines")) +
   scale_fill_viridis_c() + theme_minimal()
-
-# s %>% rasterToPoints() %>% data.frame() %>% 
-#   ggplot() + geom_tile(aes(x=x,y=y,fill=slope),show.legend = FALSE) + geom_sf(data=streams) +
-#   geom_sf_label(data=streams,aes(label=LINKNO),size=3,
-#                 label.padding=unit(.1,"lines")) +
-#   scale_fill_viridis_c() + theme_minimal()
-
-
 ```
 
 We like the look of stream segments *12* and *20* for further investigation.

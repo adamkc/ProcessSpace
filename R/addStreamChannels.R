@@ -20,16 +20,13 @@ addStreamChannels <- function(transectObject,
 
   bufferPoly <- sf::st_union(transectObject$leftSide,transectObject$rightSide) %>%
     sf::st_bbox()
-  # st_polygonize() %>%
-  # sf::st_transform(crs = 26910)
 
   sideChannelsPoints <- sf::read_sf(streamChannelFile) %>%
-    sf::st_transform(crs = 26910) %>%
-    #st_intersection(bufferPoly) %>%
     sf::st_crop(bufferPoly) %>%
     sf::st_cast("LINESTRING",warn=FALSE) %>%
     sf::st_line_sample(density = sampleDensity) %>%
-    sf::st_cast("POINT",warn=FALSE) %>% sf::st_as_sf()
+    sf::st_cast("POINT",warn=FALSE) %>%
+    sf::st_as_sf()
 
   sideChannelsPoints$Dist <- sf::st_distance(sideChannelsPoints,
                                          transectObject$mainLine%>%

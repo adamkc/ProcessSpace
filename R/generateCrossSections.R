@@ -21,6 +21,8 @@ generateCrossSections <- function(streamChannel,
                                   xSectionLength = units::as_units(100,"m"),
                                   xSectionDensity = units::as_units(100,"m")){
 
+  streamChannel <- sf::st_transform(streamChannel, raster::crs(streamChannel))
+
   plotBbox.WGS <- sf::st_bbox(streamChannel %>%
                                 sf::st_transform(crs=4326))
 
@@ -28,7 +30,8 @@ generateCrossSections <- function(streamChannel,
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_line_merge()%>%
     sf::st_cast("LINESTRING",warn=FALSE) %>%
-    sf::st_sfc(crs=raster::crs(streamChannel))
+    sf::st_sfc() %>%
+    sf::st_transform(crs=raster::crs(streamChannel))
   #streamChannel.union$Shape_Leng = st_length(streamChannel.union)
 
   channelLength = sum(sf::st_length(streamChannel.union))
