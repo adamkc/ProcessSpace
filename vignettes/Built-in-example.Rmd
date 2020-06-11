@@ -65,7 +65,7 @@ selected. Then it draws semi-permendicular cross sections at each point at for t
 
 ```{r}
 transectObject <- targetStream %>%
-  generateCrossSections(xSectionDensity = units::as_units(50,"m"),
+  generateCrossSections(xSectionDensity = units::as_units(20,"m"),
                         googleZoom=16,
                         xSectionLength = units::as_units(100,"m"),
                         cut1Dir = "W",
@@ -100,11 +100,32 @@ transectObject <- transectObject %>% allAtOnce(outputFilename = "exampleOutput.p
                              verticalCutoff=8,
                              streamChannelFile = streamsDir,
                              returnObject = TRUE,
-                             doExportSpatial = TRUE )
+                             doExportSpatial = FALSE)
 ```
 
 ## Then export the results as a comprehensive KMZ file:
 
+This produces a KMZ file that contains the cross section plots imbedded.  Clicking the points along the stream file pull up the cross section plots
+
 ```{r}
 exportSpatials(transectObject,sectionName = "exampleOutput")
 ```
+
+## Here's what the detrended raster and a single cross section plot can look like:
+
+Regions of the map with lower elevations than the stream are green, regions
+similar in elevation to the stream are blue, and regions higher than the stream
+elevation go from red to tan.
+
+![Detrended Raster](exampleOutput_temp_El_legend.png)
+
+![Detrended Raster](exampleOutput_temp_El.png)
+
+Cross section look like this: They are plotted as though you're looking upstream
+(which comes naturally when then raster and cross sections are viewed 3D in
+google earth.) The blue and green bands show elevations within 1ft and 2ft of
+the stream channel. This particular transect shows the stream is captured by a
+highly incised channel and the terrain slopes downhill in either perpendicular
+direction from the stream path. Perhaps this is not a natural flow path?
+
+![Cross section Plot](exampleOutput-Images/Transect_3_temp_.png)

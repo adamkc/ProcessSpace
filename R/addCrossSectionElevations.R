@@ -38,13 +38,13 @@ addCrossSectionElevations <- function(transectObject,
 
   transectObject$ls0$streamEl <- raster::extract(r, transectObject$ls0 %>%
                                                    sf::st_line_sample(ls0,sample=1)%>%
-                                                   st_as_sf() %>%
+                                                   sf::st_as_sf() %>%
                                                    sf::st_cast("POINT") %>%
                                                    sf::st_transform(raster::crs(r)))
 
   transectObject$rs0$streamEl <- raster::extract(r,transectObject$rs0 %>%
                                                    sf::st_line_sample(ls0,sample=1)%>%
-                                                   st_as_sf() %>%
+                                                   sf::st_as_sf() %>%
                                                    sf::st_cast("POINT") %>%
                                                    sf::st_transform(raster::crs(r)))
 
