@@ -36,9 +36,22 @@ addCrossSectionElevations <- function(transectObject,
                                                            transectObject$sampledPoints%>%
                                                              sf::st_transform(raster::crs(r)))
 
+  transectObject$ls0$streamEl <- raster::extract(r, transectObject$ls0 %>%
+                                                   sf::st_line_sample(ls0,sample=1)%>%
+                                                   st_as_sf() %>%
+                                                   sf::st_cast("POINT") %>%
+                                                   sf::st_transform(raster::crs(r)))
+
+  transectObject$rs0$streamEl <- raster::extract(r,transectObject$rs0 %>%
+                                                   sf::st_line_sample(ls0,sample=1)%>%
+                                                   st_as_sf() %>%
+                                                   sf::st_cast("POINT") %>%
+                                                   sf::st_transform(raster::crs(r)))
+
   ls0_points <- transectObject$ls0 %>%
     sf::st_transform(raster::crs(r)) %>%
-    sf::st_line_sample(density = units::as_units(1,"m")) %>% #1pts/meter
+    #sf::st_line_sample(density = units::as_units(0.25,"m")) %>% #1pts/meter
+    sf::st_line_sample(sample = seq(from=1,to = 0,length.out=150)) %>%
     sf::st_sf() %>%
     dplyr::mutate(Transect =transectObject$sampledPoints$pointID,
                   Side = "ls",
@@ -50,7 +63,8 @@ addCrossSectionElevations <- function(transectObject,
 
   rs0_points <- transectObject$rs0 %>%
     sf::st_transform(raster::crs(r)) %>%
-    sf::st_line_sample(density = units::as_units(1,"m")) %>% #1pts/meter
+    #sf::st_line_sample(density = units::as_units(0.25,"m")) %>% #1pts/meter
+    sf::st_line_sample(sample = seq(from=1,to = 0,length.out=150)) %>%
     sf::st_sf() %>%
     dplyr::mutate(Transect =transectObject$sampledPoints$pointID,
                   Side = "rs",
@@ -87,7 +101,7 @@ addCrossSectionElevations <- function(transectObject,
                                          yes = seq(from=0,to=1,length.out = dplyr::n()),
                                          no=seq(from=1,to=0,length.out = dplyr::n())),
                   metersLength = percentLength*length,
-                  metersLength = dplyr::case_when(Side=="rs" ~ -metersLength,
+                  metersLength = dplyr::case_when(Side=="ls" ~ -metersLength,
                                                   TRUE ~ metersLength)) %>%
     dplyr::select(-test) %>%
     dplyr::arrange(Index) %>%

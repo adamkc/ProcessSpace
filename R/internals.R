@@ -54,7 +54,7 @@ outputTimer <- function(startTime){
 exportIndividualXSectionPlots <- function(transectObject,sectionName){
   dir <- paste0(sectionName,"-Images")
   if(!dir.exists(dir)) dir.create(dir)
-  plotter <- function(df=temp){
+  plotter <- function(df){
     filename <- file.path(dir,paste0("Transect_",df$Transect[1],"_temp_.png"))
     ggplot2::ggplot(df,ggplot2::aes(x=metersLength,y=deltaEl)) +
       ggplot2::annotate("rect", xmin = -Inf, xmax = Inf,
