@@ -1,7 +1,7 @@
 Package: ProcessSpace
 Type: Package
 Title: A package to process LiDAR for meadow restoration visualizations.
-Version: 0.1.007
+Version: 0.1.008
 Date: 2020-06-11
 Author: Adam Cummings <adam.cummings@usda.gov>
 Maintainer: Adam Cummings <adam.cummings@usda.gov>

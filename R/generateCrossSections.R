@@ -21,7 +21,7 @@ generateCrossSections <- function(streamChannel,
                                   xSectionLength = units::as_units(100,"m"),
                                   xSectionDensity = units::as_units(100,"m")){
 
-  streamChannel <- sf::st_transform(streamChannel, raster::crs(streamChannel))
+  #streamChannel <- sf::st_transform(streamChannel, sf::st_crs(streamChannel))
 
   plotBbox.WGS <- sf::st_bbox(streamChannel %>%
                                 sf::st_transform(crs=4326))
