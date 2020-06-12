@@ -8,8 +8,8 @@ library(ggmap) # necessary to load credentials.
 # library(ggmap)
 # library(raster)
 # library(rgdal)
-library(patchwork) # Necessary in "buildXSectionPlot.r" for combining plots. Replace with cowplot...
- library(plotKML) #Necessary to load saga_pal
+#library(patchwork) # Necessary in "buildXSectionPlot.r" for combining plots. Replace with cowplot...
+#library(plotKML) #Necessary to load saga_pal
 #source("R Scripts/Functions.R")
 
 setwd("F:/Adam Cummings/ChildsMeadowGeo")
@@ -17,6 +17,8 @@ setwd("F:/Adam Cummings/ChildsMeadowGeo")
 #MainChannel.shp:
 mainChannel <- sf::read_sf("GeoData/MainChannel.shp") %>%
   sf::st_transform(crs = 26910) #%>% sf::st_union()
+
+r <- raster::raster("GeoData/Raster/ChildsDEM_m.tif")
 
 #Full Thing:  ---------------------------------------------------------
 mainOutput <- mainChannel %>%
@@ -248,10 +250,10 @@ LostM2 <- sf::read_sf("GeoData/STREAM CHANNELS.shp") %>%
 finger1 <- sf::read_sf("GeoData/Finger1.shp") %>%
   sf::st_transform(crs = 26910) %>%
   generateCrossSections(googleZoom=16,
-                        xSectionLength = units::as_units(100,"m"),
-                        xSectionDensity = units::as_units(20,"m")) %>%
+                        xSectionLength = units::as_units(50,"m"),
+                        xSectionDensity = units::as_units(200,"m")) %>%
   allAtOnce("Finger1.pdf",
-            doExportSpatial = TRUE,
+            doExportSpatial = FALSE,
             returnObject = TRUE)
 
 sf::read_sf("RasterOutputs/ConceptualPlan/CulvertsPlusDiversions/raster_net.shp") %>%

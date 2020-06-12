@@ -23,7 +23,7 @@ rasterPlotter <- function(transectObject,
     data.frame() %>%
     sf::st_as_sf(coords=c("X2","X1"),crs=raster::crs(r)) %>%
     sf::as_Spatial() %>%
-    sp::spTransform(raster::projection(r))
+    sp::spTransform(raster::crs(r))
 
   mainLine_projected <- transectObject$mainLine %>%
     sf::st_transform(raster::crs(r))
@@ -32,16 +32,16 @@ rasterPlotter <- function(transectObject,
     sf::st_transform(raster::crs(r)) %>%
     extent.sf()
 
-  r.clip <- raster::crop(x = r,
-                         y=bufferPoly)
+  r.clip <- raster::crop(x = r, y=bufferPoly)# %>%
+    #raster::projectRaster(crs = raster::crs(r))
 
-  r.clip.df <- r.clip %>% methods::as("SpatialPixelsDataFrame") %>%
-    as.data.frame()
-  names(r.clip.df) <- c("Value","x","y")
-  r.clip.df <- r.clip.df %>%
-    dplyr::mutate(Zscore = abs(Value - mean(Value,na.rm=TRUE))) %>%
-    dplyr::mutate(Value= dplyr::case_when(Zscore < 3 * sd(Value,na.rm=TRUE) ~ Value,
-                                          TRUE ~ mean(Value,na.rm=TRUE)))
+  # r.clip.df <- r.clip %>% methods::as("SpatialPixelsDataFrame") %>%
+  #   as.data.frame()
+  # names(r.clip.df) <- c("Value","x","y")
+  # r.clip.df <- r.clip.df %>%
+  #   dplyr::mutate(Zscore = abs(Value - mean(Value,na.rm=TRUE))) %>%
+  #   dplyr::mutate(Value= dplyr::case_when(Zscore < 3 * sd(Value,na.rm=TRUE) ~ Value,
+  #                                         TRUE ~ mean(Value,na.rm=TRUE)))
 
   ##Detrended Raster
   ## Interpolation from:
@@ -51,10 +51,22 @@ rasterPlotter <- function(transectObject,
 
 
   deltaElPts <- transectObject$XSectionPlotData %>%
-    dplyr::select(geometry,deltaEl) %>% sf::as_Spatial()
+    dplyr::select(geometry,deltaEl) %>%
+    sf::as_Spatial() %>%
+    sp::spTransform(raster::crs(r))
+
   r.new <- raster::raster(ext=raster::extent(r.clip),
                           ncol=ncol(r.clip),nrow=nrow(r.clip),
-                          crs=raster::crs(r.clip)) %>% methods::as('SpatialPixels')
+                          crs=raster::crs(r.clip)) %>%
+    methods::as('SpatialPixels')
+
+  print("DeltaEL")
+  print(sf::st_crs(deltaElPts))
+  print(raster::crs(deltaElPts))
+
+  print("r.new")
+  print(sf::st_crs(r.new))
+  print(raster::crs(r.new))
 
   #x.interp <- gstat::idw(deltaEl~1,locations=deltaElPts,newdata=r.new,idp=2.0)
   if(interpSmoothness=="Smooth")
