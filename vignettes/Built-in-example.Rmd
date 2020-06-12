@@ -12,14 +12,21 @@ resource_files:
 
 # Load the required packages:
 
-```{r setup}
+```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(message = FALSE)
 knitr::opts_chunk$set(error = FALSE)
 knitr::opts_chunk$set(warning = FALSE)
-library(ProcessSpace)
-library(ggmap)
-library(raster)
+```
+
+```{r}
+devtools::install_github("adamkc/ProcessSpace")
+suppressPackageStartupMessages({
+  library(ProcessSpace)
+  library(ggmap)
+  library(raster)  
+})
+
 ```
 
 # Load the Data files and check them
@@ -61,12 +68,14 @@ selected. Then it draws semi-permendicular cross sections at each point at for t
 
 ```{r}
 transectObject <- targetStream %>%
-  generateCrossSections(xSectionDensity = units::as_units(20,"m"),
+  generateCrossSections(xSectionDensity = units::as_units(100,"m"),
                         googleZoom=16,
                         xSectionLength = units::as_units(100,"m"),
                         cut1Dir = "W",
                         cut2Dir = "E")
+```
 
+```{r}
 transectObject$satImage %>% ggmap() +
   geom_sf(data=transectObject$mainLine %>% sf::st_transform(4326), 
           col="blue4",alpha=.5,size=2,inherit.aes = FALSE) +

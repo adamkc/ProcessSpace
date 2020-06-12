@@ -1,12 +1,25 @@
-# ProcessSpace
-A package to process Lidar for meadow restoration visualizations.
+## ProcessSpace
 
-## Inputs
+#### Adam Cummings (USFS), <adam.cummings@usda.gov>
+A package to process Lidar to visualize stream channels flow paths.
+
+### Installation
+
+Install the package as follows:
+
+``` r
+install.packages('devtools')
+library(devtools)
+install_github('adamkc/ProcessSpace')
+library(CSCI)
+```
+
+### Inputs
 
 1. Digital Terrain Model
 2. Target Stream Reach
 
-## Outputs
+### Outputs
 
 1. Algorithmic cross sections
 1. Process Space delineation
@@ -14,23 +27,32 @@ A package to process Lidar for meadow restoration visualizations.
 1. Detrended elevations
 1. A mindset that extends beyond the meadow surface
 
-## Example Code:
+### Example Code:
 
-    library(ProcessSpace)
-    library(ggmap) # necessary to load credentials.
-    library(patchwork) # Necessary in "buildXSectionPlot.r" for combining plots. Replace with cowplot...
-    library(plotKML) #Necessary to load saga_pal
-    setwd("G:/Yosemite")
+The example below will produce a KMZ file to load into Google Earth.
 
-    AllStreams <- sf::read_sf("GeoData/yosemite_be_net.shp") %>%
-      sf::st_transform(crs = 26910)
-  
-      AllStreams %>%
-      dplyr::filter(LINKNO == 164) %>%
-      generateCrossSections(xSectionDensity = units::as_units(20,"m"),
-                            googleZoom=13, xSectionLength = 200,
-                            cut1Dir = "N", cut2Dir = "S") %>%
-      allAtOnce(outputFilename = "MainChannel_FULL.pdf",
-                rasterDir="GeoData/output_be.tif",
-                streamChannelFile = "GeoData/yosemite_be_net.shp",
-                doExportSpatial = TRUE,returnObject = FALSE)
+``` r
+library(ProcessSpace)
+library(ggmap) # necessary to load credentials.
+
+rasterDir <- system.file("external/raster.tif", package="ProcessSpace")
+streamsDir <- system.file("external/streams.shp", package="ProcessSpace")
+streams <- sf::read_sf(streamsDir)
+targetStream <- streams %>% dplyr::filter(LINKNO %in% c(12,20))
+
+
+targetStream %>%
+  generateCrossSections(xSectionDensity = units::as_units(100,"m"),
+                        googleZoom=16,
+                        xSectionLength = units::as_units(100,"m"),
+                        cut1Dir = "W",
+                        cut2Dir = "E") %>% 
+  allAtOnce(outputFilename = "exampleOutput.pdf",
+            rasterDir = rasterDir,
+            verticalCutoff=8,
+            streamChannelFile = streamsDir,
+            returnObject = FALSE,
+            doExportSpatial = TRUE)
+```
+
+![Example image from Google Earth](images/ExampleOutput.png)
