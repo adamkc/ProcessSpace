@@ -22,6 +22,7 @@ addStreamChannels <- function(transectObject,
     sf::st_bbox()
 
   sideChannelsPoints <- sf::read_sf(streamChannelFile) %>%
+    #sf::st_transform(crs=sf::st_crs(r)) %>%
     sf::st_crop(bufferPoly) %>%
     sf::st_cast("LINESTRING",warn=FALSE) %>%
     sf::st_line_sample(density = sampleDensity) %>%

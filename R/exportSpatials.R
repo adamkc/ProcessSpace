@@ -14,9 +14,10 @@ exportSpatials <- function(transectObject,
 
   colorPalatte <- plotKML::SAGA_pal[[21]]#$SG_COLORS_GREEN_RED_BLUE
   suppressMessages({
-    plotKML::plotKML.env(silent = TRUE, kmz = FALSE,
+    plotKML::plotKML.env(silent = TRUE, kmz = TRUE,
                          colour_scale_numeric = colorPalatte)
-    plotKML::kml_open(paste0(sectionName,"_temp_"),overwrite=TRUE,kml_visibility = FALSE)
+    plotKML::kml_open(paste0(sectionName,"_temp_"),
+                      overwrite=TRUE,kml_visibility = FALSE)
     cat(crayon::green("Writing kml to:\n"))
     cat(crayon::green(paste0(sectionName,".kml")))
     cat("\n")

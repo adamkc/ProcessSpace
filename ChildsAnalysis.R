@@ -14,11 +14,19 @@ library(ggmap) # necessary to load credentials.
 
 setwd("F:/Adam Cummings/ChildsMeadowGeo")
 
+r <- raster::raster("GeoData/Raster/ChildsDEM_m.tif")
+
 #MainChannel.shp:
 mainChannel <- sf::read_sf("GeoData/MainChannel.shp") %>%
-  sf::st_transform(crs = 26910) #%>% sf::st_union()
+  #sf::st_transform(crs = 26910)
+  sf::st_transform(crs = raster::crs(r))
 
-r <- raster::raster("GeoData/Raster/ChildsDEM_m.tif")
+
+ channels <- sf::read_sf("GeoData/STREAM CHANNELS.shp") %>%
+   #sf::st_transform(crs = 26910)
+   sf::st_transform(crs = st_crs(r))
+#
+# sf::write_sf(channels,"GeoData/STREAM CHANNELS.shp")
 
 #Full Thing:  ---------------------------------------------------------
 mainOutput <- mainChannel %>%
@@ -248,7 +256,7 @@ LostM2 <- sf::read_sf("GeoData/STREAM CHANNELS.shp") %>%
 
 
 finger1 <- sf::read_sf("GeoData/Finger1.shp") %>%
-  sf::st_transform(crs = 26910) %>%
+  #sf::st_transform(crs = 26910) %>%
   generateCrossSections(googleZoom=16,
                         xSectionLength = units::as_units(50,"m"),
                         xSectionDensity = units::as_units(200,"m")) %>%

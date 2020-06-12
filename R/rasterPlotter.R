@@ -60,13 +60,13 @@ rasterPlotter <- function(transectObject,
                           crs=raster::crs(r.clip)) %>%
     methods::as('SpatialPixels')
 
-  print("DeltaEL")
-  print(sf::st_crs(deltaElPts))
-  print(raster::crs(deltaElPts))
-
-  print("r.new")
-  print(sf::st_crs(r.new))
-  print(raster::crs(r.new))
+  # print("DeltaEL")
+  # print(sf::st_crs(deltaElPts))
+  # print(raster::crs(deltaElPts))
+  #
+  # print("r.new")
+  # print(sf::st_crs(r.new))
+  # print(raster::crs(r.new))
 
   #x.interp <- gstat::idw(deltaEl~1,locations=deltaElPts,newdata=r.new,idp=2.0)
   if(interpSmoothness=="Smooth")

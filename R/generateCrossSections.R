@@ -31,7 +31,7 @@ generateCrossSections <- function(streamChannel,
     sf::st_line_merge()%>%
     sf::st_cast("LINESTRING",warn=FALSE) %>%
     sf::st_sfc() %>%
-    sf::st_transform(crs=raster::crs(streamChannel))
+    sf::st_transform(crs=sf::st_crs(streamChannel))
   #streamChannel.union$Shape_Leng = st_length(streamChannel.union)
 
   channelLength = sum(sf::st_length(streamChannel.union))
@@ -47,7 +47,8 @@ generateCrossSections <- function(streamChannel,
     sf::st_difference(y=sf::st_buffer(streamChannel %>% sf::st_union(),
                                       dist = as.numeric(xSectionLength*0.95),
                                       nQuadSegs = 100)) %>%
-    sf::st_cast("MULTILINESTRING")
+    sf::st_cast("MULTILINESTRING") %>%
+    sf::st_transform(crs=sf::st_crs(streamChannel))
 
 
   buff2 <- sf::st_buffer(streamChannel %>% sf::st_union(),
@@ -59,7 +60,8 @@ generateCrossSections <- function(streamChannel,
     sf::st_difference(y=sf::st_buffer(streamChannel %>% sf::st_union(),
                                       dist = as.numeric(xSectionLength*0.95),
                                       nQuadSegs = 100))%>%
-    sf::st_cast("MULTILINESTRING")
+    sf::st_cast("MULTILINESTRING") %>%
+    sf::st_transform(crs=sf::st_crs(streamChannel))
 
   leftSide <- buff1
   rightSide <- buff2
@@ -114,7 +116,7 @@ generateCrossSections <- function(streamChannel,
     }
   }
 
-  cut1.far <- cut1.far %>% sf::st_sfc(crs=raster::crs(streamChannel))
+  cut1.far <- cut1.far %>% sf::st_sfc(crs=sf::st_crs(streamChannel))
   #
   #   Buff.Line <-
   #     sf::st_buffer(streamChannel %>% sf::st_union(),
