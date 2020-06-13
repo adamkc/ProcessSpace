@@ -11,7 +11,7 @@ Install the package as follows:
 install.packages('devtools')
 library(devtools)
 install_github('adamkc/ProcessSpace')
-library(CSCI)
+library(ProcessSpace)
 ```
 
 ### Inputs
