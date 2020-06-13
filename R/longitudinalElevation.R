@@ -14,49 +14,56 @@ longitudinalElevation <- function(transectObject,
                                   rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
                                   makePlot=TRUE,
                                   returnData=TRUE,
-                                  plotFileName="longPlot.png"){
+                                  plotFileName="longitudinalPlot.png"){
   cat(crayon::green("Generating Longitudinal Elevation\n"))
-  # Velox Method, Super fast but can't move along the line object:
-  #   r <- velox(rasterDir)
-  #   transectObject$mainLine_projected <- transectObject$mainLine %>%
-  #     sf::st_transform(crs = r$crs)
-  #   q <- r$copy()
-  #   q$crop(transectObject$mainLine_projected)
-  #   mainChannelSlopes <- q$extract(transectObject$mainLine_projected)
-  # mainChannelSlopes %>% do.call(what = rbind) %>% data.frame(El = .) %>%
-  #   arrange(desc(El)) %>% mutate(Index=row_number())
-  #Slow raster::version:
+
   r <- raster::raster(rasterDir)
-  transectObject$mainLine_projected <- transectObject$mainLine %>%
-    sf::st_transform(raster::crs(r))
-  ElPoints <- sf::st_line_sample(transectObject$mainLine_projected,
-                                 density = units::as_units(1,"ft")) #1pts/foot
+  # transectObject$mainLine_projected <- transectObject$mainLine %>%
+  #   sf::st_transform(sf::st_crs(r))
+  ElPoints <- transectObject$mainLine %>%
+    sf::st_line_sample(density = units::as_units(1,"ft")) %>% #1pts/foot
+    sf::st_cast("POINT") %>% st_sf()
 
-  pointsPerSeg = lapply(ElPoints,length) %>%
-    unlist() %>%
-    data.frame(Points = ./2) %>%
-    dplyr::mutate(segLength_ft = as.numeric(sf::st_length(transectObject$mainLine_projected)),
-                  segLength_m =  as.numeric(sf::st_length(transectObject$mainLine)),
-                  Segment = as.factor(transectObject$mainLine_projected$arcid)) %>%
-    dplyr::select(-.)
-  ElPoints <- ElPoints %>% sf::as_Spatial() %>% sp::SpatialPoints()
+  # pointsPerSeg = lapply(ElPoints,length) %>%
+  #   unlist() %>%
+  #   data.frame(Points = ./2) %>%
+  #   dplyr::mutate(segLength_ft = as.numeric(sf::st_length(transectObject$mainLine_projected)),
+  #                 segLength_m =  as.numeric(sf::st_length(transectObject$mainLine)),
+  #                 Segment = as.factor(transectObject$mainLine_projected$arcid)) %>%
+  #   dplyr::select(-.)
 
-  temp <- raster::crop(x = r,y = transectObject$mainLine_projected)
+  #pointsPerMeter = length(ElPoints)/sum(st_length(transectObject$mainLine)%>%
+  #                                        units::set_units("m"))
+
+  ElPoints <- ElPoints %>% sf::st_sf()
+
+  temp <- raster::crop(x = r,y = transectObject$mainLine)
   # mainChannelSlopes <- raster::extract(temp,
   #                                      transectObject$mainLine_projected,
   #                                      method="simple",along=TRUE)
 
-  ElPoints$El <- raster::extract(temp,ElPoints,method="simple")
-  ElPoints <- ElPoints %>% data.frame() %>%
-    dplyr::select(-optional) %>%
-    dplyr::mutate(Segment = as.factor(rep(transectObject$mainLine_projected$arcid,
-                                          pointsPerSeg$Points)),
-                  SegmentName = rep(paste0("arcid_",
-                                           transectObject$mainLine_projected$arcid),
-                                    pointsPerSeg$Points)) %>%
-    dplyr::left_join(pointsPerSeg,by="Segment") %>%
-    dplyr::arrange(dplyr::desc(El)) %>%
-    dplyr::mutate(Index=dplyr::row_number())
+  ElPoints$El <- raster::extract(temp,ElPoints)
+  ElPoints <- ElPoints %>%
+    arrange(desc(El)) %>%
+    dplyr::mutate(index=1:n(),
+                  slope = as.numeric((units::as_units(El-lead(El),"m")/units::as_units(1,"ft"))),
+                  lengthAlong = as.numeric((index/n())*sum(st_length(transectObject$mainLine)%>%
+                                                  units::set_units("m"))))
+
+  ElPoints %>% ggplot(aes(x=lengthAlong,y=slope)) + geom_smooth() + geom_line(alpha=.2)
+
+  ElPoints %>% ggplot(aes(x=lengthAlong,y=El)) + geom_line()
+
+
+  # dplyr::select(-optional) %>%
+    # dplyr::mutate(Segment = as.factor(rep(transectObject$mainLine_projected$arcid,
+    #                                       pointsPerSeg$Points)),
+    #               SegmentName = rep(paste0("arcid_",
+    #                                        transectObject$mainLine_projected$arcid),
+    #                                 pointsPerSeg$Points)) %>%
+    # dplyr::left_join(pointsPerSeg,by="Segment") %>%
+    # dplyr::arrange(dplyr::desc(El)) %>%
+    # dplyr::mutate(Index=dplyr::row_number())
 
 
   if(makePlot==TRUE){

@@ -18,9 +18,7 @@ exportSpatials <- function(transectObject,
                          colour_scale_numeric = colorPalatte)
     plotKML::kml_open(paste0(sectionName,"_temp_"),
                       overwrite=TRUE,kml_visibility = FALSE)
-    cat(crayon::green("Writing kml to:\n"))
-    cat(crayon::green(paste0(sectionName,".kml")))
-    cat("\n")
+    cat(crayon::green(paste0("Writing kml to: ", sectionName,".kml\n")))
     #--
     if(!is.null(transectObject$mainLine))
       transectObject$mainLine %>%
@@ -42,7 +40,8 @@ exportSpatials <- function(transectObject,
                            shape="http://maps.google.com/mapfiles/kml/pal2/icon18.png")
       } else{
         temp <- transectObject$sampledPoints %>% sf::as_Spatial()
-        plotKML::kml_layer(temp,subfolder.name="sampledPoints",
+        plotKML::kml_layer(temp,
+                           subfolder.name="sampledPoints",
                            points_names = temp$pointID,
                            colour="turquoise", size=0.5,
                            shape="http://maps.google.com/mapfiles/kml/pal2/icon18.png")
@@ -141,8 +140,10 @@ exportSpatials <- function(transectObject,
     files <- c(paste0(sectionName,"_temp_El.png"),
                paste0(sectionName,"_temp_El_legend.png"),
                paste0(sectionName,"-Images"))
-    kml_compress_fixed(file.name=paste0(sectionName,"_temp_.kml"),
+    kml_compress_fixed(file.name=paste0(sectionName,"_temp_.kml"),rm=TRUE,
                        files = files)
+    file.rename(from = paste0(sectionName,"_temp_.kmz"),
+                to = paste0(sectionName,".kmz"))
 
   })
 

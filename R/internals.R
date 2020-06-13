@@ -125,9 +125,10 @@ kml_compress_fixed <- function(file.name, zip = Sys.getenv("R_ZIPCMD", "zip"),
   kmz <- stringr::str_replace(file.name, extension, "kmz")
   if (.Platform$OS.type == "windows") {
     suppressMessages( try(x <- zip(zipfile = utils::shortPathName(kmz),
-                                   files = c(utils::shortPathName(file.name),
-                                             utils::shortPathName(files)),
+                                   files = c(file.name,files),
                                    flags="-r9Xq",
+                                   # -r:recursive; -9:maxspeed;
+                                   # -X: no attributes saved; -q: quiet;
                                    zip = zip)))
   }
   else {
@@ -143,7 +144,8 @@ kml_compress_fixed <- function(file.name, zip = Sys.getenv("R_ZIPCMD", "zip"),
     }
   }
   if (file.exists(kmz) & rm == TRUE) {
-    x <- file.remove(file.name, files)
+    suppressWarnings({ x <- file.remove(file.name, files)
+    })
   }
 }
 

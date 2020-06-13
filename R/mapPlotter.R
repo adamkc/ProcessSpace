@@ -39,7 +39,7 @@ mapPlotter <- function(transectObject,
   if(!is.null(transectObject$plotDataContours1ft)){
     mapPlot <- mapPlot +
       ggplot2::geom_sf(data=transectObject$plotDataContours1ft,
-                       col=ggplot2::alpha("black",0.6),linetype=2,size=.2,
+                       col=ggplot2::alpha("black",0.3),linetype=2,size=.2,
                        inherit.aes = FALSE)
   }
 
