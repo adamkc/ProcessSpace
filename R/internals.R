@@ -118,31 +118,37 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
 #' @export
 #'
 #' @examples
-kml_compress_fixed <- function(file.name, zip = Sys.getenv("R_ZIPCMD", "zip"),
-                               files = "", rm = FALSE, ...)
+kml_compress_fixed <- function(file.name, files = "", removeTemps = TRUE)
 {
   extension <- tools::file_ext(file.name)
   kmz <- stringr::str_replace(file.name, extension, "kmz")
-  if (.Platform$OS.type == "windows") {
-    suppressMessages( try(x <- zip(zipfile = utils::shortPathName(kmz),
-                                   files = c(utils::shortPathName(file.name),
-                                             utils::shortPathName(files)),
-                                   flags="-r9Xq",
-                                   zip = zip)))
-  }
-  else {
-    suppressMessages( try(x <- zip(zipfile = kmz, files = file.name,
-                                   flags="-r9Xq", zip = zip)))
-  }
-  if (methods::is(.Last.value, "try-error") | x == 127) {
-    if (zip == "" | !nzchar(zip)) {
-      warning("KMZ generation failed. No zip utility has been found.")
-    }
-    else {
-      warning("KMZ generation failed. Wrong command passed to 'zip = ... option'.")
-    }
-  }
-  if (file.exists(kmz) & rm == TRUE) {
+
+  zip::zipr(zipfile = kmz,files = files,recurse = TRUE)
+
+  #
+  #
+  # if (.Platform$OS.type == "windows") {
+  #   suppressMessages( try(x <- zip(zipfile = kmz,
+  #                                  files = c(file.name, files),
+  #                                  flags="-r9Xq",
+  #                                  zip = zipCommand)))
+  # }
+  # else {
+  #   suppressMessages( try(x <- zip(zipfile = kmz, files = file.name,
+  #                                  flags="-r9Xq", zip = zipCommand)))
+  # }
+  # if(x == 127){
+  #   warning("KMZ generation failed. Error 127: unable to locate zip utility")
+  # }
+  # if (methods::is(.Last.value, "try-error")) {
+  #   if (zipCommand == "" | !nzchar(zipCommand)) {
+  #     warning("KMZ generation failed. No zip utility has been found.")
+  #   }
+  #   else {
+  #     warning("KMZ generation failed. Wrong command passed to 'zipCommand = ... option'.")
+  #   }
+  # }
+  if (file.exists(kmz) & removeTemps == TRUE) {
     x <- file.remove(file.name, files)
   }
 }
