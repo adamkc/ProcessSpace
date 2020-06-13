@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.011</span>
       </span>
     </div>
 
@@ -90,28 +90,22 @@
 <div id="load-the-required-packages" class="section level1">
 <h1 class="hasAnchor">
 <a href="#load-the-required-packages" class="anchor"></a>Load the required packages:</h1>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span>$<span class="fu">set</span>(<span class="kw">echo</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span>$<span class="fu">set</span>(<span class="kw">message</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span>$<span class="fu">set</span>(<span class="kw">error</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span>$<span class="fu">set</span>(<span class="kw">warning</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ProcessSpace</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggmap</span>)</pre></body></html></div>
-<pre><code>## Loading required package: ggplot2</code></pre>
-<pre><code>## Warning: package 'ggplot2' was built under R version 3.6.3</code></pre>
-<pre><code>## Google's Terms of Service: https://cloud.google.com/maps-platform/terms/.</code></pre>
-<pre><code>## Please cite ggmap if you use it! See citation("ggmap") for details.</code></pre>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">raster</span>)</pre></body></html></div>
-<pre><code>## Loading required package: sp</code></pre>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co">#devtools::install_github("adamkc/ProcessSpace")</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span>({
+  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ProcessSpace</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggmap</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">raster</span>)
+})</pre></body></html></div>
 </div>
 <div id="load-the-data-files-and-check-them" class="section level1">
 <h1 class="hasAnchor">
-<a href="#load-the-data-files-and-check-them" class="anchor"></a>load the Data files and check them</h1>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">rasterDir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/raster.tif"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
+<a href="#load-the-data-files-and-check-them" class="anchor"></a>Load the Data files and check them</h1>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">rasterDir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/raster.tif"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
 <span class="no">streamsDir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/streams.shp"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
 <span class="no">r</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span>(<span class="no">rasterDir</span>)
-<span class="no">streams</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">streamsDir</span>)
-
-<span class="no">s</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/terrain.html">terrain</a></span>(<span class="no">r</span>, <span class="kw">opt</span><span class="kw">=</span><span class="st">"slope"</span>)
+<span class="no">streams</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">streamsDir</span>)</pre></body></html></div>
+<p>And then plot the raster hillshade:</p>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">s</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/terrain.html">terrain</a></span>(<span class="no">r</span>, <span class="kw">opt</span><span class="kw">=</span><span class="st">"slope"</span>)
 <span class="no">a</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/terrain.html">terrain</a></span>(<span class="no">r</span>, <span class="kw">opt</span><span class="kw">=</span><span class="st">"aspect"</span>)
 <span class="no">h</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/hillShade.html">hillShade</a></span>(<span class="no">s</span>,<span class="no">a</span>)
 <span class="no">h</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/rasterToPoints.html">rasterToPoints</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>() <span class="kw">%&gt;%</span>
@@ -119,19 +113,14 @@
   <span class="fu">geom_sf_label</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">streams</span>,<span class="fu">aes</span>(<span class="kw">label</span><span class="kw">=</span><span class="no">LINKNO</span>),<span class="kw">size</span><span class="kw">=</span><span class="fl">3</span>,
                 <span class="kw">label.padding</span><span class="kw">=</span><span class="fu">unit</span>(<span class="fl">.1</span>,<span class="st">"lines"</span>)) +
   <span class="fu">scale_fill_viridis_c</span>() + <span class="fu">theme_minimal</span>()</pre></body></html></div>
-<p><img src="Built-in-example_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"># s %&gt;% rasterToPoints() %&gt;% data.frame() %&gt;% 
-#   ggplot() + geom_tile(aes(x=x,y=y,fill=slope),show.legend = FALSE) + geom_sf(data=streams) +
-#   geom_sf_label(data=streams,aes(label=LINKNO),size=3,
-#                 label.padding=unit(.1,"lines")) +
-#   scale_fill_viridis_c() + theme_minimal()</pre></body></html></div>
+<p><img src="Built-in-example_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>We like the look of stream segments <em>12</em> and <em>20</em> for further investigation. Let’s pull those two aside and confirm we grabbed the right ones:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">targetStream</span> <span class="kw">&lt;-</span> <span class="no">streams</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">LINKNO</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">12</span>,<span class="fl">20</span>))
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">targetStream</span> <span class="kw">&lt;-</span> <span class="no">streams</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">LINKNO</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">12</span>,<span class="fl">20</span>))
 <span class="co">#Check that you grabbed the right streams:</span>
 <span class="fu">ggplot</span>(<span class="no">streams</span>) + <span class="fu">geom_sf</span>() +
   <span class="fu">geom_sf</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">targetStream</span>,<span class="kw">col</span><span class="kw">=</span><span class="st">"blue4"</span>,<span class="kw">size</span><span class="kw">=</span><span class="fl">3</span>,<span class="kw">alpha</span><span class="kw">=</span><span class="fl">.6</span>) +
   <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/theme_nothing.html">theme_nothing</a></span>()</pre></body></html></div>
-<p><img src="Built-in-example_files/figure-html/unnamed-chunk-2-1.png" width="384"></p>
+<p><img src="Built-in-example_files/figure-html/unnamed-chunk-4-1.png" width="384"></p>
 </div>
 <div id="lets-run-it-through-the-tool" class="section level1">
 <h1 class="hasAnchor">
@@ -139,15 +128,14 @@
 <div id="first-generate-the-cross-sections" class="section level2">
 <h2 class="hasAnchor">
 <a href="#first-generate-the-cross-sections" class="anchor"></a>First, generate the cross sections:</h2>
-<p>This places evenly spaced points along the selected stream file at the interval selected. Then it draws semi-permendicular cross sections at each point at for the length given. You need to indicate the general flow direction of the stream with cut1Dir and cut2Dir. If the stream flows West to East provide “W” and “E”, if it flows North to East provide “N”, “E”</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">transectObject</span> <span class="kw">&lt;-</span> <span class="no">targetStream</span> <span class="kw">%&gt;%</span>
+<p>This places evenly spaced points along the selected stream file at the interval selected. Then it draws semi-perpendicular cross sections at each point at for the length given. You need to indicate the general flow direction of the stream with cut1Dir and cut2Dir. If the stream flows West to East provide “W” and “E”, if it flows North to East provide “N”, “E”</p>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">transectObject</span> <span class="kw">&lt;-</span> <span class="no">targetStream</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/generateCrossSections.html">generateCrossSections</a></span>(<span class="kw">xSectionDensity</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">20</span>,<span class="st">"m"</span>),
                         <span class="kw">googleZoom</span><span class="kw">=</span><span class="fl">16</span>,
                         <span class="kw">xSectionLength</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">100</span>,<span class="st">"m"</span>),
                         <span class="kw">cut1Dir</span> <span class="kw">=</span> <span class="st">"W"</span>,
-                        <span class="kw">cut2Dir</span> <span class="kw">=</span> <span class="st">"E"</span>)
-
-<span class="no">transectObject</span>$<span class="no">satImage</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span>() +
+                        <span class="kw">cut2Dir</span> <span class="kw">=</span> <span class="st">"E"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">transectObject</span>$<span class="no">satImage</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span>() +
   <span class="fu">geom_sf</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">transectObject</span>$<span class="no">mainLine</span> <span class="kw">%&gt;%</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fl">4326</span>),
           <span class="kw">col</span><span class="kw">=</span><span class="st">"blue4"</span>,<span class="kw">alpha</span><span class="kw">=</span><span class="fl">.5</span>,<span class="kw">size</span><span class="kw">=</span><span class="fl">2</span>,<span class="kw">inherit.aes</span> <span class="kw">=</span> <span class="fl">FALSE</span>) +
   <span class="fu">geom_sf</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">transectObject</span>$<span class="no">ls0</span> <span class="kw">%&gt;%</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fl">4326</span>),
@@ -157,12 +145,12 @@
   <span class="fu">geom_sf</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">transectObject</span>$<span class="no">leftSide</span> <span class="kw">%&gt;%</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fl">4326</span>),<span class="kw">inherit.aes</span> <span class="kw">=</span> <span class="fl">FALSE</span>) +
   <span class="fu">geom_sf</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">transectObject</span>$<span class="no">rightSide</span> <span class="kw">%&gt;%</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fl">4326</span>),
           <span class="kw">col</span><span class="kw">=</span><span class="st">"blue"</span>,<span class="kw">inherit.aes</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-<p><img src="Built-in-example_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="Built-in-example_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
 <div id="second-run-it-through-a-series-of-manipulations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#second-run-it-through-a-series-of-manipulations" class="anchor"></a>Second, run it through a series of manipulations:</h2>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="co">##Long and version:</span>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co">##Long and version:</span>
 
 <span class="co"># transectObject &lt;- transectObject %&gt;%</span>
 <span class="co">#   addTopoLines(rasterDir = rasterDir) %&gt;%</span>
@@ -180,19 +168,19 @@
                              <span class="kw">streamChannelFile</span> <span class="kw">=</span> <span class="no">streamsDir</span>,
                              <span class="kw">returnObject</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
                              <span class="kw">doExportSpatial</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-<pre><code>## Adding TopoLines -- Completed in 0.03 mins.
-## Adding Stream Channel Data -- Completed in 0.03 mins.
-## Extracting Cross Section Elevations -- Completed in 0.06 mins.
+<pre><code>## Adding TopoLines -- Completed in 0.02 mins.
+## Adding Stream Channel Data -- Completed in 0.04 mins.
+## Extracting Cross Section Elevations -- Completed in 0.05 mins.
 ## Calculating Process Space Polygons -- Completed in 0.14 mins.
 ## Generating Map Plot -- Completed in 0 mins.</code></pre>
 <pre><code>## Generating Detrended Elevation Raster[inverse distance weighted interpolation]
-##  -- Completed in 0.12 mins.</code></pre>
+##  -- Completed in 0.11 mins.</code></pre>
 </div>
 <div id="then-export-the-results-as-a-comprehensive-kmz-file" class="section level2">
 <h2 class="hasAnchor">
 <a href="#then-export-the-results-as-a-comprehensive-kmz-file" class="anchor"></a>Then export the results as a comprehensive KMZ file:</h2>
 <p>This produces a KMZ file that contains the cross section plots imbedded. Clicking the points along the stream file pull up the cross section plots</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="../reference/exportSpatials.html">exportSpatials</a></span>(<span class="no">transectObject</span>,<span class="kw">sectionName</span> <span class="kw">=</span> <span class="st">"exampleOutput"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../reference/exportSpatials.html">exportSpatials</a></span>(<span class="no">transectObject</span>,<span class="kw">sectionName</span> <span class="kw">=</span> <span class="st">"exampleOutput"</span>)</pre></body></html></div>
 <pre><code>## Writing kml to:
 ## exampleOutput.kml
 ## There are 60 ggplots being generated</code></pre>
@@ -201,13 +189,13 @@
 <h2 class="hasAnchor">
 <a href="#heres-what-the-detrended-raster-and-a-single-cross-section-plot-can-look-like" class="anchor"></a>Here’s what the detrended raster and a single cross section plot can look like:</h2>
 <p>Regions of the map with lower elevations than the stream are green, regions similar in elevation to the stream are blue, and regions higher than the stream elevation go from red to tan.</p>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">legend</span> <span class="kw">&lt;-</span> <span class="kw pkg">magick</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_read</a></span>(<span class="st">"exampleOutput_temp_El_legend.png"</span>)
-<span class="no">detrend</span> <span class="kw">&lt;-</span> <span class="kw pkg">magick</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_read</a></span>(<span class="st">"exampleOutput_temp_El.png"</span>)
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">legend</span> <span class="kw">&lt;-</span> <span class="kw pkg">magick</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_read</a></span>(<span class="st">"exampleOutput_El_legend.png"</span>)
+<span class="no">detrend</span> <span class="kw">&lt;-</span> <span class="kw pkg">magick</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_read</a></span>(<span class="st">"exampleOutput_El.png"</span>)
 <span class="kw pkg">magick</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/animation.html">image_mosaic</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw pkg">magick</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/color.html">image_background</a></span>(<span class="no">detrend</span>,<span class="st">"grey"</span>),<span class="no">legend</span>))</pre></body></html></div>
-<p><img src="Built-in-example_files/figure-html/unnamed-chunk-6-1.png" width="589"></p>
-<p>Cross section look like this. They are plotted as though you’re looking upstream (which comes naturally when then raster and cross sections are viewed 3D in google earth.) The blue and green bands show elevations within 1ft and 2ft of the stream channel. This particular transect shows the stream is captured by a highly incised channel and the terrain slopes downhill in either perpendicular direction from the stream path. Perhaps this is not a natural flow path?</p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span>(<span class="kw pkg">magick</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_read</a></span>(<span class="st">"exampleOutput-Images/Transect_10_temp_.png"</span>))</pre></body></html></div>
-<p><img src="Built-in-example_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<p><img src="Built-in-example_files/figure-html/unnamed-chunk-9-1.png" width="585"></p>
+<p>Cross section look like this. They are plotted as though you’re looking upstream (which comes naturally when then raster and cross sections are viewed 3D in Google Earth.) The blue and green bands show elevations within 1ft and 2ft of the stream channel. This particular transect shows the stream is captured by a highly incised channel and the terrain slopes downhill in either perpendicular direction from the stream path. Perhaps this is not a natural flow path?</p>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span>(<span class="kw pkg">magick</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_read</a></span>(<span class="st">"exampleOutput-Images/Transect_10_temp_.png"</span>))</pre></body></html></div>
+<p><img src="Built-in-example_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 </div>
 </div>
   </div>

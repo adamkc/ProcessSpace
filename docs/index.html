@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.011</span>
       </span>
     </div>
 
@@ -79,21 +79,35 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="processspace" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#processspace" class="anchor"></a>ProcessSpace</h1></div>
-<p>A package to process Lidar for meadow restoration visualizations.</p>
-<div id="inputs" class="section level2">
+<div id="processspace" class="section level2">
 <h2 class="hasAnchor">
-<a href="#inputs" class="anchor"></a>Inputs</h2>
+<a href="#processspace" class="anchor"></a>ProcessSpace</h2>
+<div id="adam-cummings-usfs-adamcummingsusdagov" class="section level4">
+<h4 class="hasAnchor">
+<a href="#adam-cummings-usfs-adamcummingsusdagov" class="anchor"></a>Adam Cummings (USFS), <a href="mailto:adam.cummings@usda.gov" class="email">adam.cummings@usda.gov</a>
+</h4>
+<p>A package to process Lidar to visualize stream channels flow paths.</p>
+</div>
+<div id="installation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h3>
+<p>Install the package as follows:</p>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">'devtools'</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
+<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">'adamkc/ProcessSpace'</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">CSCI</span>)</pre></div>
+</div>
+<div id="inputs" class="section level3">
+<h3 class="hasAnchor">
+<a href="#inputs" class="anchor"></a>Inputs</h3>
 <ol>
 <li>Digital Terrain Model</li>
 <li>Target Stream Reach</li>
 </ol>
 </div>
-<div id="outputs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#outputs" class="anchor"></a>Outputs</h2>
+<div id="outputs" class="section level3">
+<h3 class="hasAnchor">
+<a href="#outputs" class="anchor"></a>Outputs</h3>
 <ol>
 <li>Algorithmic cross sections</li>
 <li>Process Space delineation</li>
@@ -102,27 +116,32 @@
 <li>A mindset that extends beyond the meadow surface</li>
 </ol>
 </div>
-<div id="example-code" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example-code" class="anchor"></a>Example Code:</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(ProcessSpace)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(ggmap) <span class="co"># necessary to load credentials.</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(patchwork) <span class="co"># Necessary in "buildXSectionPlot.r" for combining plots. Replace with cowplot...</span></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw">library</span>(plotKML) <span class="co">#Necessary to load saga_pal</span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="kw">setwd</span>(<span class="st">"G:/Yosemite"</span>)</a>
-<a class="sourceLine" id="cb1-6" title="6"></a>
-<a class="sourceLine" id="cb1-7" title="7">AllStreams &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="st">"GeoData/yosemite_be_net.shp"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="st">  </span>sf<span class="op">::</span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="dv">26910</span>)</a>
-<a class="sourceLine" id="cb1-9" title="9"></a>
-<a class="sourceLine" id="cb1-10" title="10">  AllStreams <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-11" title="11"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(LINKNO <span class="op">==</span><span class="st"> </span><span class="dv">164</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-12" title="12"><span class="st">  </span><span class="kw">generateCrossSections</span>(<span class="dt">xSectionDensity =</span> units<span class="op">::</span><span class="kw">as_units</span>(<span class="dv">20</span>,<span class="st">"m"</span>),</a>
-<a class="sourceLine" id="cb1-13" title="13">                        <span class="dt">googleZoom=</span><span class="dv">13</span>, <span class="dt">xSectionLength =</span> <span class="dv">200</span>,</a>
-<a class="sourceLine" id="cb1-14" title="14">                        <span class="dt">cut1Dir =</span> <span class="st">"N"</span>, <span class="dt">cut2Dir =</span> <span class="st">"S"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-15" title="15"><span class="st">  </span><span class="kw">allAtOnce</span>(<span class="dt">outputFilename =</span> <span class="st">"MainChannel_FULL.pdf"</span>,</a>
-<a class="sourceLine" id="cb1-16" title="16">            <span class="dt">rasterDir=</span><span class="st">"GeoData/output_be.tif"</span>,</a>
-<a class="sourceLine" id="cb1-17" title="17">            <span class="dt">streamChannelFile =</span> <span class="st">"GeoData/yosemite_be_net.shp"</span>,</a>
-<a class="sourceLine" id="cb1-18" title="18">            <span class="dt">doExportSpatial =</span> <span class="ot">TRUE</span>,<span class="dt">returnObject =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div id="example-code" class="section level3">
+<h3 class="hasAnchor">
+<a href="#example-code" class="anchor"></a>Example Code:</h3>
+<p>The example below will produce a KMZ file to load into Google Earth.</p>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ProcessSpace</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggmap</span>) <span class="co"># necessary to load credentials.</span>
+
+<span class="no">rasterDir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/raster.tif"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
+<span class="no">streamsDir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/streams.shp"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
+<span class="no">streams</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">streamsDir</span>)
+<span class="no">targetStream</span> <span class="kw">&lt;-</span> <span class="no">streams</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">LINKNO</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">12</span>,<span class="fl">20</span>))
+
+
+<span class="no">targetStream</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/generateCrossSections.html">generateCrossSections</a></span>(<span class="kw">xSectionDensity</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">100</span>,<span class="st">"m"</span>),
+                        <span class="kw">googleZoom</span><span class="kw">=</span><span class="fl">16</span>,
+                        <span class="kw">xSectionLength</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">100</span>,<span class="st">"m"</span>),
+                        <span class="kw">cut1Dir</span> <span class="kw">=</span> <span class="st">"W"</span>,
+                        <span class="kw">cut2Dir</span> <span class="kw">=</span> <span class="st">"E"</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/allAtOnce.html">allAtOnce</a></span>(<span class="kw">outputFilename</span> <span class="kw">=</span> <span class="st">"exampleOutput.pdf"</span>,
+            <span class="kw">rasterDir</span> <span class="kw">=</span> <span class="no">rasterDir</span>,
+            <span class="kw">verticalCutoff</span><span class="kw">=</span><span class="fl">8</span>,
+            <span class="kw">streamChannelFile</span> <span class="kw">=</span> <span class="no">streamsDir</span>,
+            <span class="kw">returnObject</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
+            <span class="kw">doExportSpatial</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
+<p><img src="images/ExampleOutput.png" alt="Example image from Google Earth"></p>
 </div>
 </div>
   </div>

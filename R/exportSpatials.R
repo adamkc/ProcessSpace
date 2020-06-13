@@ -141,7 +141,8 @@ exportSpatials <- function(transectObject,
       #                     path = getwd(),recursive=TRUE)
       files <- c(paste0(sectionName,"_temp_El.png"),
                  paste0(sectionName,"_temp_El_legend.png"),
-                 paste0(sectionName,"-Images"))
+                 paste0(sectionName,"-Images"),
+                 paste0(sectionName,"_temp_.kml"))
       kml_compress_fixed(file.name=paste0(sectionName,"_temp_.kml"),
                          files = files)
 

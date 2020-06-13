@@ -55,6 +55,7 @@ generateCrossSections <- function(streamChannel,
                          dist = as.numeric(-xSectionLength),
                          nQuadSegs = 100,
                          singleSide=TRUE)%>%
+    smoothr::smooth("ksmooth",smoothness=20) %>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_line_merge() %>%
     sf::st_difference(y=sf::st_buffer(streamChannel %>% sf::st_union(),
@@ -222,7 +223,7 @@ generateCrossSections <- function(streamChannel,
                                      maptype = "satellite")
 
   } else{
-    cat(crayon::red("Sat image not retrieved.. getting stamenmap instead."))
+    cat(crayon::red("Sat image not retrieved.. getting stamenmap instead.\n See ggmap::register_google() to set up satellite imagery."))
     satImage <- ggmap::get_stamenmap(c(left = plotBbox.WGS[1] %>% as.numeric(),
                                        bottom = plotBbox.WGS[2] %>% as.numeric(),
                                        right = plotBbox.WGS[3] %>% as.numeric(),
