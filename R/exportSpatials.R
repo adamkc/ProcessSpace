@@ -14,40 +14,6 @@ exportSpatials <- function(transectObject,
 
   colorPalatte <- plotKML::SAGA_pal[[21]]#$SG_COLORS_GREEN_RED_BLUE
   suppressMessages({
-<<<<<<< HEAD
-    plotKML::plotKML.env(silent = TRUE, kmz = TRUE,
-                         colour_scale_numeric = colorPalatte)
-    plotKML::kml_open(paste0(sectionName,"_temp_"),
-                      overwrite=TRUE,kml_visibility = FALSE)
-    cat(crayon::green(paste0("Writing kml to: ", sectionName,".kml\n")))
-    #--
-    if(!is.null(transectObject$mainLine))
-      transectObject$mainLine %>%
-      sf::as_Spatial() %>%
-      plotKML::kml_layer(subfolder.name="mainLine",
-                         colour="blue",width=5)
-    #--
-    if(!is.null(transectObject$sampledPoints)){
-      if(addXSectionPlots){
-        exportIndividualXSectionPlots(transectObject,sectionName)
-        temp <- transectObject$sampledPoints %>% sf::as_Spatial()
-        plotKML::kml_layer(temp,
-                           subfolder.name="sampledPoints",
-                           points_names = temp$pointID,
-                           html.table = paste0("<img style=\"max-width:800px;\" src=\"",
-                                               sectionName,"-Images/Transect_",
-                                               temp$pointID,"_temp_.png\">"),
-                           colour="turquoise", size=0.5,
-                           shape="http://maps.google.com/mapfiles/kml/pal2/icon18.png")
-      } else{
-        temp <- transectObject$sampledPoints %>% sf::as_Spatial()
-        plotKML::kml_layer(temp,
-                           subfolder.name="sampledPoints",
-                           points_names = temp$pointID,
-                           colour="turquoise", size=0.5,
-                           shape="http://maps.google.com/mapfiles/kml/pal2/icon18.png")
-      }
-=======
     suppressWarnings({
       plotKML::plotKML.env(silent = TRUE, kmz = TRUE,
                            colour_scale_numeric = colorPalatte)
@@ -82,8 +48,6 @@ exportSpatials <- function(transectObject,
                              colour="turquoise", size=0.5,
                              shape="http://maps.google.com/mapfiles/kml/pal2/icon18.png")
         }
->>>>>>> 53aaa240dfc90e615ec3161f25f8544856f136f2
-
       }
 
       #--
@@ -161,7 +125,7 @@ exportSpatials <- function(transectObject,
                            balloon = TRUE,
                            colour="green",alpha=.2,width=3)
       #--
-      outerBoundsRange <- max(abs(range(transectObject$XSectionPlotData$deltaEl)))
+      #outerBoundsRange <- max(abs(range(transectObject$XSectionPlotData$deltaEl)))
       if(!is.null(transectObject$detrendedRaster))
         plotKML::kml_layer(obj = transectObject$detrendedRaster,
                            subfolder.name="Height Above Water",
@@ -170,19 +134,7 @@ exportSpatials <- function(transectObject,
                            z.lim=c(-4,4),
                            colour_scale=SAGA_pal[[21]])
 
-<<<<<<< HEAD
-    #Wrap it up:
-    plotKML::kml_close(file.name=paste0(sectionName,"_temp_.kml"))
-    # files <- list.files(pattern=paste0(sectionName,"_temp_"),
-    #                     path = getwd(),recursive=TRUE)
-    files <- c(paste0(sectionName,"_temp_El.png"),
-               paste0(sectionName,"_temp_El_legend.png"),
-               paste0(sectionName,"-Images"))
-    kml_compress_fixed(file.name=paste0(sectionName,"_temp_.kml"),rm=TRUE,
-                       files = files)
-    file.rename(from = paste0(sectionName,"_temp_.kmz"),
-                to = paste0(sectionName,".kmz"))
-=======
+
       #Wrap it up:
       plotKML::kml_close(file.name=paste0(sectionName,"_temp_.kml"))
       # files <- list.files(pattern=paste0(sectionName,"_temp_"),
@@ -193,8 +145,6 @@ exportSpatials <- function(transectObject,
                  paste0(sectionName,"_temp_.kml"))
       kml_compress_fixed(file.name=paste0(sectionName,"_temp_.kml"),
                          files = files)
->>>>>>> 53aaa240dfc90e615ec3161f25f8544856f136f2
-
     })
   })
 
