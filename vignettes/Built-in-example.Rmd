@@ -20,7 +20,7 @@ knitr::opts_chunk$set(warning = FALSE)
 ```
 
 ```{r}
-devtools::install_github("adamkc/ProcessSpace")
+#devtools::install_github("adamkc/ProcessSpace")
 suppressPackageStartupMessages({
   library(ProcessSpace)
   library(ggmap)
@@ -36,7 +36,11 @@ rasterDir <- system.file("external/raster.tif", package="ProcessSpace")
 streamsDir <- system.file("external/streams.shp", package="ProcessSpace")
 r <- raster(rasterDir)
 streams <- sf::read_sf(streamsDir)
+```
 
+And then plot the raster hillshade:
+
+```{r}
 s <- raster::terrain(r, opt="slope")
 a <- raster::terrain(r, opt="aspect")
 h <- raster::hillShade(s,a)
@@ -64,11 +68,11 @@ ggplot(streams) + geom_sf() +
 ## First, generate the cross sections:
 
 This places evenly spaced points along the selected stream file at the interval
-selected. Then it draws semi-permendicular cross sections at each point at for the length given. You need to indicate the general flow direction of the stream with cut1Dir and cut2Dir.  If the stream flows West to East provide "W" and "E", if it flows North to East provide "N", "E"
+selected. Then it draws semi-perpendicular cross sections at each point at for the length given. You need to indicate the general flow direction of the stream with cut1Dir and cut2Dir.  If the stream flows West to East provide "W" and "E", if it flows North to East provide "N", "E"
 
 ```{r}
 transectObject <- targetStream %>%
-  generateCrossSections(xSectionDensity = units::as_units(100,"m"),
+  generateCrossSections(xSectionDensity = units::as_units(20,"m"),
                         googleZoom=16,
                         xSectionLength = units::as_units(100,"m"),
                         cut1Dir = "W",
@@ -128,8 +132,8 @@ elevation go from red to tan.
 
 ```{r}
 
-legend <- magick::image_read("exampleOutput_temp_El_legend.png")
-detrend <- magick::image_read("exampleOutput_temp_El.png")
+legend <- magick::image_read("exampleOutput_El_legend.png")
+detrend <- magick::image_read("exampleOutput_El.png")
 magick::image_mosaic(c(magick::image_background(detrend,"grey"),legend))
 
 ```
@@ -138,7 +142,7 @@ magick::image_mosaic(c(magick::image_background(detrend,"grey"),legend))
 
 Cross section look like this. They are plotted as though you're looking upstream
 (which comes naturally when then raster and cross sections are viewed 3D in
-google earth.) The blue and green bands show elevations within 1ft and 2ft of
+Google Earth.) The blue and green bands show elevations within 1ft and 2ft of
 the stream channel. This particular transect shows the stream is captured by a
 highly incised channel and the terrain slopes downhill in either perpendicular
 direction from the stream path. Perhaps this is not a natural flow path?
