@@ -23,8 +23,7 @@ generateCrossSections <- function(streamChannel,
 
   #streamChannel <- sf::st_transform(streamChannel, sf::st_crs(streamChannel))
 
-  plotBbox.WGS <- sf::st_bbox(streamChannel %>%
-                                sf::st_transform(crs=4326))
+
 
   streamChannel.union <- sf::st_union(streamChannel) %>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
@@ -216,6 +215,10 @@ generateCrossSections <- function(streamChannel,
   #   return(line)
   #   }) %>% do.call("rbind", .)
 
+  plotBbox.WGS <- c(leftSide,rightSide) %>%
+    sf::st_transform(crs=4326) %>%
+    sf::st_bbox()
+
   if(getSatImage & ggmap::has_google_key()){
     satImage <- ggmap::get_googlemap(center = c(mean(plotBbox.WGS[c(1,3)]),
                                                 mean(plotBbox.WGS[c(2,4)])),
@@ -223,7 +226,8 @@ generateCrossSections <- function(streamChannel,
                                      maptype = "satellite")
 
   } else{
-    cat(crayon::red("Sat image not retrieved.. getting stamenmap instead.\n See ggmap::register_google() to set up satellite imagery."))
+    cat(crayon::red("Sat image not retrieved.. getting stamenmap instead.\n See ggmap::register_google() to set up satellite imagery.\n"))
+
     satImage <- ggmap::get_stamenmap(c(left = plotBbox.WGS[1] %>% as.numeric(),
                                        bottom = plotBbox.WGS[2] %>% as.numeric(),
                                        right = plotBbox.WGS[3] %>% as.numeric(),
