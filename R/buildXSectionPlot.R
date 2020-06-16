@@ -35,18 +35,18 @@ buildXSectionPlot <- function(transectObject,
     dplyr::group_by(Side) %>%
     dplyr::summarize(x = mean(metersLength,na.rm=TRUE)) %>%
     dplyr::bind_rows(data.frame(Side="center",x=0,stringsAsFactors = FALSE)) %>%
-    dplyr::mutate(label=factor(c("Left Side\n Looking Downstream",
-                                 "Right Side\n Looking Downstream",
+    dplyr::mutate(label=factor(c("Right Side\n Looking Upstream",
+                                 "Left Side\n Looking Upstream",
                                  "Stream Channel"),
-                               levels=c("Left Side\n Looking Downstream",
-                                        "Right Side\n Looking Downstream",
+                               levels=c("Right Side\n Looking Upstream",
+                                        "Left Side\n Looking Upstream",
                                         "Stream Channel")),
                   y=c(max(tempPlotData$El,na.rm=TRUE)))
   ###
 
 
   transectPlot <- ggplot2::ggplot(tempPlotData,
-                                  ggplot2::aes(x=metersLength,y=El,
+                                  ggplot2::aes(x=-metersLength,y=El,
                                                col=deltaElCat,group=Transect))
 
   if(!is.null(transectObject$plotDataSideChannels)){
@@ -79,7 +79,7 @@ buildXSectionPlot <- function(transectObject,
                         col="white",show.legend=FALSE,
                         inherit.aes=FALSE,size=4) +
     ggplot2::scale_fill_manual(values = c("blue","red4","purple4"))+
-    ggplot2::ylim(c(min(transectObject$sampledPoints$streamEl,na.rm=TRUE),
+    ggplot2::ylim(c(min(transectObject$sampledPoints$streamEl,na.rm=TRUE-5),
                     max(transectObject$sampledPoints$streamEl,na.rm=TRUE)+5)) +
     ggplot2::xlim(c(transectObject$XsectionElevations$length[1],
                     -transectObject$XsectionElevations$length[1])) +

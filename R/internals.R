@@ -121,7 +121,10 @@ kml_compress_fixed <- function(file.name, files = "", removeTemps = TRUE)
   extension <- tools::file_ext(file.name)
   kmz <- stringr::str_replace(file.name, extension, "kmz")
 
-  zip::zipr(zipfile = kmz,files = files,recurse = TRUE)
+  #zip::zip is depreciated and may not work on all systems. But by default it
+  #handles folders passed in file.name and files arguments. So We'll run with it
+  #until it doenst work anymore....
+  zip::zip(zipfile = kmz,files = files,recurse = TRUE,include_directories = TRUE)
 
   #
   #

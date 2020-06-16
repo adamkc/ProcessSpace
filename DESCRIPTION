@@ -1,14 +1,15 @@
 Package: ProcessSpace
 Type: Package
-Title: A package to process LiDAR for meadow restoration visualizations.
-Version: 0.1.012
-Date: 2020-06-13
+Title: A package to process LiDAR for stream and meadow restoration visualizations.
+BugReports: https://github.com/adamkc/ProcessSpace/issues
+Version: 0.1.013
+Date: 2020-06-15
 Author: Adam Cummings <adam.cummings@usda.gov>
 Maintainer: Adam Cummings <adam.cummings@usda.gov>
 Description: This package uses high resolution LiDAR terrain data and a
      stream flow network shapefile to generate detrended elevation rasters and
      polygons showing potential process space (space potentially available to
-     hydrologic processes with only minor stream flow perterbations). These
+     hydrologic processes with only minor stream flow perturbations). These
      spatial data are exported as KMZ files that enable 3D interaction in
      Google Earth. 
 License: GPL-3

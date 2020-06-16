@@ -1,7 +1,26 @@
 ## ProcessSpace
 
 #### Adam Cummings (USFS), <adam.cummings@usda.gov>
+
 A package to process Lidar to visualize stream channels flow paths.
+
+### Description
+
+This process space tool automates a detailed catchment-level assessment of
+streams and channels using LiDAR-derived DEMs to enable visualization of flow
+path anomalies and restoration opportunities not easily observed in the field or
+using conventional maps. From steep tributaries to the valley bottom, flow paths
+can be assessed to determine if they were degraded, ditched, or if flow paths
+had been redirected or constricted due to current or historical roads or other
+disturbances. This information can be used to restore natural flow paths with
+high precision interventions to restore stream function, reduce need for road
+and culvert repair, and restore downstream valley-bottom habitats.
+
+Outputs include topographical cross-sections, 1-ft and 2-ft process space
+polygons that estimate increases to baseline surface water levels at time of
+LiDAR and color-coded detrended elevation models all of which can be visualized
+three-dimensionally in Google Earth using the kmz file output.
+
 
 ### Installation
 
