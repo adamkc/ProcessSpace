@@ -2,7 +2,7 @@ Package: ProcessSpace
 Type: Package
 Title: A package to process LiDAR for stream and meadow restoration visualizations.
 BugReports: https://github.com/adamkc/ProcessSpace/issues
-Version: 0.1.013
+Version: 0.1.02
 Date: 2020-06-15
 Author: Adam Cummings <adam.cummings@usda.gov>
 Maintainer: Adam Cummings <adam.cummings@usda.gov>
