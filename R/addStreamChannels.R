@@ -13,6 +13,11 @@ addStreamChannels <- function(transectObject,
                               rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
                               streamChannelFile = "GeoData/STREAM CHANNELS.shp",
                               ...){
+  ##Error Checks:
+  if(!is.character(rasterDir)) error("rasterDir argument needs to be a character string")
+  if(!is.character(streamChannelFile)) error("rasterDir argument needs to be a character string")
+  ##
+
   cat(crayon::green("Adding Stream Channel Data"))
   startTime <- Sys.time()
   r <- raster::raster(rasterDir)

@@ -44,11 +44,13 @@ And then plot the raster hillshade:
 s <- raster::terrain(r, opt="slope")
 a <- raster::terrain(r, opt="aspect")
 h <- raster::hillShade(s,a)
-h %>% rasterToPoints() %>% data.frame() %>% 
+rasterPlot <- h %>% rasterToPoints() %>% data.frame() %>% 
   ggplot() + geom_tile(aes(x=x,y=y,fill=layer),show.legend = FALSE) + geom_sf(data=streams) +
   geom_sf_label(data=streams,aes(label=LINKNO),size=3,
                 label.padding=unit(.1,"lines")) +
   scale_fill_viridis_c() + theme_minimal()
+
+rasterPlot
 ```
 
 We like the look of stream segments *12* and *20* for further investigation.

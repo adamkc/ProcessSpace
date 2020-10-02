@@ -22,7 +22,7 @@ longitudinalElevation <- function(transectObject,
   #   sf::st_transform(sf::st_crs(r))
   ElPoints <- transectObject$mainLine %>%
     sf::st_line_sample(density = units::as_units(1,"ft")) %>% #1pts/foot
-    sf::st_cast("POINT") %>% st_sf()
+    sf::st_cast("POINT") %>% sf::st_sf()
 
   # pointsPerSeg = lapply(ElPoints,length) %>%
   #   unlist() %>%
@@ -44,15 +44,17 @@ longitudinalElevation <- function(transectObject,
 
   ElPoints$El <- raster::extract(temp,ElPoints)
   ElPoints <- ElPoints %>%
-    arrange(desc(El)) %>%
-    dplyr::mutate(index=1:n(),
-                  slope = as.numeric((units::as_units(El-lead(El),"m")/units::as_units(1,"ft"))),
-                  lengthAlong = as.numeric((index/n())*sum(st_length(transectObject$mainLine)%>%
+    dplyr::arrange(desc(El)) %>%
+    dplyr::mutate(index=1:dplyr::n(),
+                  slope = as.numeric((units::as_units(El-dplyr::lead(El),"m")/units::as_units(1,"ft"))),
+                  lengthAlong = as.numeric((index/dplyr::n())*sum(sf::st_length(transectObject$mainLine)%>%
                                                   units::set_units("m"))))
 
-  ElPoints %>% ggplot(aes(x=lengthAlong,y=slope)) + geom_smooth() + geom_line(alpha=.2)
+  ElPoints %>% ggplot2::ggplot(ggplot2::aes(x=lengthAlong,y=slope)) +
+    ggplot2::geom_smooth() + ggplot2::geom_line(alpha=.2)
 
-  ElPoints %>% ggplot(aes(x=lengthAlong,y=El)) + geom_line()
+  ElPoints %>% ggplot2::ggplot(ggplot2::aes(x=lengthAlong,y=El)) +
+    ggplot2::geom_line()
 
 
   # dplyr::select(-optional) %>%

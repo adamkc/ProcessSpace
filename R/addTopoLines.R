@@ -10,7 +10,9 @@
 addTopoLines <- function(transectObject,
                          rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
                          ...){
-
+  ##Error Checks:
+  if(!is.character(rasterDir)) error("rasterDir argument needs to be a character string")
+  ##
   cat(crayon::green("Adding TopoLines"))
   startTime <- Sys.time()
   r <- raster::raster(rasterDir)

@@ -21,23 +21,71 @@ generateCrossSections <- function(streamChannel,
                                   xSectionLength = units::as_units(100,"m"),
                                   xSectionDensity = units::as_units(100,"m")){
 
-  #streamChannel <- sf::st_transform(streamChannel, sf::st_crs(streamChannel))
+
+  Buff.bbox <- sf::st_bbox(streamChannel)
+
+  if(cut1Dir == "W"){
+    cut1.far <- sf::st_point(c(Buff.bbox["xmin"]-50000,
+                               mean(Buff.bbox[c("ymin","ymax")]))) %>%
+      sf::st_sfc(crs=sf::st_crs(streamChannel))
+  }
+  if(cut1Dir == "E"){
+    cut1.far <- sf::st_point(c(Buff.bbox["xmax"]+50000,
+                               mean(Buff.bbox[c("ymin","ymax")]))) %>%
+      sf::st_sfc(crs=sf::st_crs(streamChannel))
+  }
+  if(cut1Dir == "N"){
+    cut1.far <- sf::st_point(c(mean(Buff.bbox[c("xmin","xmax")]),
+                               Buff.bbox["ymax"]+50000))  %>%
+      sf::st_sfc(crs=sf::st_crs(streamChannel))
+  }
+  if(cut1Dir == "S"){
+    cut1.far <- sf::st_point(c(mean(Buff.bbox[c("xmin","xmax")]),
+                               Buff.bbox["ymin"]-50000)) %>%
+      sf::st_sfc(crs=sf::st_crs(streamChannel))
+  }
+
+  streamPts <-  streamChannel %>%
+    sf::st_cast("POINT",warn=FALSE) %>%
+    dplyr::mutate(dist = sf::st_distance(.,cut1.far)) %>%
+    dplyr::arrange(dist)
+
+  #streamPts$distFromFar = 1:nrow(streamPts)
+  distMat <- sf::st_distance(streamPts) %>%
+    as.numeric() %>%
+    matrix(nrow=nrow(streamPts))
+  newOrder <- 1
+
+  for(i in 1:nrow(streamPts)) {
+    thisPoint <- which(newOrder==i)[1]
+    distMat[thisPoint,] <- NA
+    nextPoint <- which.min(distMat[,thisPoint])
+    newOrder[nextPoint] <- i+1
+  }
+
+  streamPts$distFromTop <- newOrder
+
+  streamChannel.union <- streamPts %>%
+    dplyr::arrange(distFromTop) %>%
+    sf::st_coordinates() %>%
+    sf::st_linestring() %>%
+    sf::st_sfc(crs=sf::st_crs(streamChannel))
 
 
 
-  streamChannel.union <- sf::st_union(streamChannel) %>%
-    sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
-    sf::st_line_merge()%>%
-    sf::st_cast("LINESTRING",warn=FALSE) %>%
-    sf::st_sfc() %>%
-    sf::st_transform(crs=sf::st_crs(streamChannel))
-  #streamChannel.union$Shape_Leng = st_length(streamChannel.union)
+  # streamChannel.union <- sf::st_union(streamChannel) %>%
+  #   sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
+  #   sf::st_line_merge()%>%
+  #   sf::st_cast("LINESTRING",warn=FALSE) %>%
+  #   sf::st_sfc() %>%
+  #   sf::st_transform(crs=sf::st_crs(streamChannel))
+  # #streamChannel.union$Shape_Leng = st_length(streamChannel.union)
 
   channelLength = sum(sf::st_length(streamChannel.union))
 
   ####
 
-  buff1 <- sf::st_buffer(streamChannel %>% sf::st_union(),
+  buff1 <- sf::st_buffer(streamChannel.union,
                          dist = as.numeric(xSectionLength),
                          nQuadSegs = 100,
                          singleSide=TRUE) %>%
@@ -50,7 +98,7 @@ generateCrossSections <- function(streamChannel,
     sf::st_transform(crs=sf::st_crs(streamChannel))
 
 
-  buff2 <- sf::st_buffer(streamChannel %>% sf::st_union(),
+  buff2 <- sf::st_buffer(streamChannel.union,
                          dist = as.numeric(-xSectionLength),
                          nQuadSegs = 100,
                          singleSide=TRUE)%>%
@@ -66,14 +114,11 @@ generateCrossSections <- function(streamChannel,
   leftSide <- buff1
   rightSide <- buff2
 
-
   buff1.center <- sf::st_centroid(buff1) %>% sf::st_coordinates()
   buff2.center <- sf::st_centroid(buff2) %>% sf::st_coordinates()
-  Buff.bbox <- sf::st_bbox(streamChannel)
+
 
   if(cut1Dir == "W"){
-    cut1.far <- sf::st_point(c(Buff.bbox["xmin"]-10000,
-                               mean(Buff.bbox[c("ymin","ymax")])))
     if(buff1.center[2]>buff2.center[2]){
       rightSide <- buff1
       leftSide <- buff2
@@ -83,8 +128,6 @@ generateCrossSections <- function(streamChannel,
     }
   }
   if(cut1Dir == "E"){
-    cut1.far <- sf::st_point(c(Buff.bbox["xmax"]+10000,
-                               mean(Buff.bbox[c("ymin","ymax")])))
     if(buff1.center[2]<buff2.center[2]){
       rightSide <- buff1
       leftSide <- buff2
@@ -94,8 +137,6 @@ generateCrossSections <- function(streamChannel,
     }
   }
   if(cut1Dir == "N"){
-    cut1.far <- sf::st_point(c(mean(Buff.bbox[c("xmin","xmax")]),
-                               Buff.bbox["ymax"]+10000))
     if(buff1.center[1]>buff2.center[1]){
       rightSide <- buff1
       leftSide <- buff2
@@ -105,8 +146,6 @@ generateCrossSections <- function(streamChannel,
     }
   }
   if(cut1Dir == "S"){
-    cut1.far <- sf::st_point(c(mean(Buff.bbox[c("xmin","xmax")]),
-                               Buff.bbox["ymin"]-10000))
     if(buff1.center[1]<buff2.center[1]){
       rightSide <- buff1
       leftSide <- buff2
@@ -116,7 +155,6 @@ generateCrossSections <- function(streamChannel,
     }
   }
 
-  cut1.far <- cut1.far %>% sf::st_sfc(crs=sf::st_crs(streamChannel))
   #
   #   Buff.Line <-
   #     sf::st_buffer(streamChannel %>% sf::st_union(),
@@ -151,13 +189,17 @@ generateCrossSections <- function(streamChannel,
   sampledPoints <- sf::st_line_sample(streamChannel.union,
                                       density= xSectionDensity,
                                       type="regular") %>%
-    sf::st_cast("POINT",warn=FALSE) %>% sf::st_as_sf() %>%
-    dplyr::mutate(dist = sf::st_distance(.,cut1.far),
-                  test = dplyr::first(dist)>dplyr::last(dist),
-                  pointID = ifelse(test,
-                                   1:dplyr::n(),
-                                   rev(1:dplyr::n()))) %>%
-    dplyr::select(-test,-dist)
+    sf::st_cast("POINT",warn=FALSE) %>%
+    sf::st_as_sf() %>%
+    dplyr::mutate(pointID = rev(1:dplyr::n()))
+
+
+    # dplyr::mutate(dist = sf::st_distance(.,cut1.far),
+    #               test = dplyr::first(dist)>dplyr::last(dist),
+    #               pointID = ifelse(test,
+    #                                1:dplyr::n(),
+    #                                rev(1:dplyr::n()))) %>%
+    # dplyr::select(-test,-dist)
 
   # sampledPoints_ls <- sf::st_line_sample(leftSide %>%
   #                                          sf::st_cast("LINESTRING",
