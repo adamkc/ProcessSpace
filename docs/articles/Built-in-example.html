@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.02</span>
       </span>
     </div>
 
@@ -62,7 +62,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/adamkc/ProcessSpace/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -80,7 +87,7 @@
             
             <h4 class="date">6/9/2020</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/adamkc/ProcessSpace/blob/master/vignettes/Built-in-example.Rmd"><code>vignettes/Built-in-example.Rmd</code></a></small>
       <div class="hidden name"><code>Built-in-example.Rmd</code></div>
 
     </div>
@@ -108,11 +115,13 @@
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">s</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/terrain.html">terrain</a></span>(<span class="no">r</span>, <span class="kw">opt</span><span class="kw">=</span><span class="st">"slope"</span>)
 <span class="no">a</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/terrain.html">terrain</a></span>(<span class="no">r</span>, <span class="kw">opt</span><span class="kw">=</span><span class="st">"aspect"</span>)
 <span class="no">h</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/hillShade.html">hillShade</a></span>(<span class="no">s</span>,<span class="no">a</span>)
-<span class="no">h</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/rasterToPoints.html">rasterToPoints</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>() <span class="kw">%&gt;%</span>
+<span class="no">rasterPlot</span> <span class="kw">&lt;-</span> <span class="no">h</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/rasterToPoints.html">rasterToPoints</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu">ggplot</span>() + <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="kw">x</span><span class="kw">=</span><span class="no">x</span>,<span class="kw">y</span><span class="kw">=</span><span class="no">y</span>,<span class="kw">fill</span><span class="kw">=</span><span class="no">layer</span>),<span class="kw">show.legend</span> <span class="kw">=</span> <span class="fl">FALSE</span>) + <span class="fu">geom_sf</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">streams</span>) +
   <span class="fu">geom_sf_label</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">streams</span>,<span class="fu">aes</span>(<span class="kw">label</span><span class="kw">=</span><span class="no">LINKNO</span>),<span class="kw">size</span><span class="kw">=</span><span class="fl">3</span>,
                 <span class="kw">label.padding</span><span class="kw">=</span><span class="fu">unit</span>(<span class="fl">.1</span>,<span class="st">"lines"</span>)) +
-  <span class="fu">scale_fill_viridis_c</span>() + <span class="fu">theme_minimal</span>()</pre></body></html></div>
+  <span class="fu">scale_fill_viridis_c</span>() + <span class="fu">theme_minimal</span>()
+
+<span class="no">rasterPlot</span></pre></body></html></div>
 <p><img src="Built-in-example_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>We like the look of stream segments <em>12</em> and <em>20</em> for further investigation. Let’s pull those two aside and confirm we grabbed the right ones:</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">targetStream</span> <span class="kw">&lt;-</span> <span class="no">streams</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">LINKNO</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">12</span>,<span class="fl">20</span>))
@@ -168,13 +177,13 @@
                              <span class="kw">streamChannelFile</span> <span class="kw">=</span> <span class="no">streamsDir</span>,
                              <span class="kw">returnObject</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
                              <span class="kw">doExportSpatial</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-<pre><code>## Adding TopoLines -- Completed in 0.02 mins.
+<pre><code>## Adding TopoLines -- Completed in 0.03 mins.
 ## Adding Stream Channel Data -- Completed in 0.04 mins.
-## Extracting Cross Section Elevations -- Completed in 0.05 mins.
-## Calculating Process Space Polygons -- Completed in 0.15 mins.
+## Extracting Cross Section Elevations -- Completed in 0.07 mins.
+## Calculating Process Space Polygons -- Completed in 0.16 mins.
 ## Generating Map Plot -- Completed in 0 mins.</code></pre>
 <pre><code>## Generating Detrended Elevation Raster[inverse distance weighted interpolation]
-##  -- Completed in 0.11 mins.</code></pre>
+##  -- Completed in 0.14 mins.</code></pre>
 </div>
 <div id="then-export-the-results-as-a-comprehensive-kmz-file" class="section level2">
 <h2 class="hasAnchor">
@@ -183,7 +192,7 @@
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../reference/exportSpatials.html">exportSpatials</a></span>(<span class="no">transectObject</span>,<span class="kw">sectionName</span> <span class="kw">=</span> <span class="st">"exampleOutput"</span>)</pre></body></html></div>
 <pre><code>## Writing kml to:
 ## exampleOutput.kml
-## There are 60 ggplots being generated</code></pre>
+## There are 68 ggplots being generated</code></pre>
 </div>
 <div id="heres-what-the-detrended-raster-and-a-single-cross-section-plot-can-look-like" class="section level2">
 <h2 class="hasAnchor">
