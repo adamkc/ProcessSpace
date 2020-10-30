@@ -2,6 +2,8 @@
 #'
 #' @param transectObject
 #' @param returnData
+#' @param streamDir File location of stream channels
+#' @param ...
 #'
 #' @return
 #' @export
@@ -10,7 +12,7 @@
 
 mapPlotter <- function(transectObject,
                        returnData=TRUE,
-                       streamChannelFile,
+                       streamDir = NULL,
                        ...){
   cat(crayon::green("Generating Map Plot"))
 
@@ -22,10 +24,13 @@ mapPlotter <- function(transectObject,
     sf::st_as_sf(coords=c("X2","X1"),crs=4326) %>% sf::st_bbox()
 
 
-  channels <- sf::read_sf(streamChannelFile) %>%
-    sf::st_transform(crs = 4326) %>%
-    sf::st_crop(rasterBbox)
-
+  if(!is.null(streamDir)){
+    if(file.exists(streamDir)){
+      channels <- sf::read_sf(streamDir) %>%
+        sf::st_transform(crs = 4326) %>%
+        sf::st_crop(rasterBbox)
+    }
+  }
 
   mapPlot <- ggmap::ggmap(transectObject$satImage)
 
@@ -77,8 +82,6 @@ mapPlotter <- function(transectObject,
     ggplot2::geom_sf(data=transectObject$rs0 %>%
                        sf::st_transform(crs=4326),
                      inherit.aes = FALSE,col=ggplot2::alpha("purple1",.4)) +
-    ggplot2::geom_sf(data=channels,col="skyblue",alpha=.1,
-                     inherit.aes=FALSE,size=.6,linetype=3)+
     ggplot2::geom_sf(data = transectObject$sampledPoints %>%
                        sf::st_transform(crs=4326),
                      inherit.aes = FALSE, color = "turquoise4",size=.1) +
@@ -87,6 +90,12 @@ mapPlotter <- function(transectObject,
                           mapping=ggplot2::aes(label=pointID),
                           inherit.aes = FALSE,col="black",size=3)+
     ggplot2::theme(panel.grid=ggplot2::element_line(color="transparent"))
+
+  if(!is.null(streamDir)){
+    mapPlot +
+      ggplot2::geom_sf(data=channels,col="skyblue",alpha=.1,
+                       inherit.aes=FALSE,size=.6,linetype=3)
+  }
 
   outputTimer(startTime)
 

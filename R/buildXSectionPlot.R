@@ -14,7 +14,7 @@ buildXSectionPlot <- function(transectObject,
                               plotFileName = "test.png",
                               returnData=TRUE,
                               verticalCutoff = 4,
-                              streamChannelFile="GeoData/STREAM CHANNELS.shp",
+                              streamDir="GeoData/STREAM CHANNELS.shp",
                               ...){
 
   if(is.null(transectObject$XsectionElevations)){
@@ -83,7 +83,7 @@ buildXSectionPlot <- function(transectObject,
                     max(transectObject$sampledPoints$streamEl,na.rm=TRUE)+5)) +
     ggplot2::xlim(c(transectObject$XsectionElevations$length[1],
                     -transectObject$XsectionElevations$length[1])) +
-    ggthemes::theme_clean()#;transectPlot
+    ggplot2::theme_classic()#;transectPlot
 
 
   transectObject$XSectionPlot <- transectPlot
@@ -91,7 +91,7 @@ buildXSectionPlot <- function(transectObject,
     sf::st_as_sf()
 
 
-  transectObject <- mapPlotter(transectObject,streamChannelFile=streamChannelFile)
+  transectObject <- mapPlotter(transectObject,streamDir=streamDir)
 
   plotToSave <-  cowplot::plot_grid(transectObject$mapPlot, transectPlot)
 

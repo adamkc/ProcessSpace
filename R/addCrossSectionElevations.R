@@ -51,7 +51,7 @@ addCrossSectionElevations <- function(transectObject,
   ls0_points <- transectObject$ls0 %>%
     sf::st_transform(raster::crs(r)) %>%
     #sf::st_line_sample(density = units::as_units(0.25,"m")) %>% #1pts/meter
-    sf::st_line_sample(sample = seq(from=1,to = 0,length.out=150)) %>%
+    sf::st_line_sample(sample = seq(from=1,to = 0,length.out=300)) %>%
     sf::st_sf() %>%
     dplyr::mutate(Transect =transectObject$sampledPoints$pointID,
                   Side = "ls",
@@ -64,7 +64,7 @@ addCrossSectionElevations <- function(transectObject,
   rs0_points <- transectObject$rs0 %>%
     sf::st_transform(raster::crs(r)) %>%
     #sf::st_line_sample(density = units::as_units(0.25,"m")) %>% #1pts/meter
-    sf::st_line_sample(sample = seq(from=1,to = 0,length.out=150)) %>%
+    sf::st_line_sample(sample = seq(from=1,to = 0,length.out=300)) %>%
     sf::st_sf() %>%
     dplyr::mutate(Transect =transectObject$sampledPoints$pointID,
                   Side = "rs",

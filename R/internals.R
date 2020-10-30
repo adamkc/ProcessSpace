@@ -56,7 +56,7 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
   if(!dir.exists(dir)) dir.create(dir)
   plotter <- function(df){
     filename <- file.path(dir,paste0("Transect_",df$Transect[1],"_temp_.png"))
-    ggplot2::ggplot(df,ggplot2::aes(x=metersLength,y=deltaEl)) +
+    plot <- ggplot2::ggplot(df,ggplot2::aes(x=metersLength,y=deltaEl)) +
       ggplot2::annotate("rect", xmin = -Inf, xmax = Inf,
                         ymin = 0, ymax = 0.3,fill="blue3",
                         alpha = .3, color = NA) +
@@ -88,7 +88,7 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
                          hjust=-.4,vjust=-.3,alpha=.5,size=2) +
       ggplot2::theme(text=ggplot2::element_text(size=4)) +
       ggplot2::xlim(min(df$metersLength),max(df$metersLength))
-    ggplot2:: ggsave(filename,height=2,width=4)
+    ggplot2::ggsave(filename = filename,plot = plot,height=2,width=4,dpi=150)
 
   }
 
@@ -119,12 +119,20 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
 kml_compress_fixed <- function(file.name, files = "", removeTemps = TRUE)
 {
   extension <- tools::file_ext(file.name)
-  kmz <- stringr::str_replace(file.name, extension, "kmz")
+  kmz <- gsub(x = file.name,
+              pattern =  extension,
+              replacement =  "kmz")
+
+  if (any(!file.exists(files)))
+    files <- files[file.exists(files)]
 
   #zip::zip is depreciated and may not work on all systems. But by default it
   #handles folders passed in file.name and files arguments. So We'll run with it
   #until it doenst work anymore....
-  zip::zip(zipfile = kmz,files = files,recurse = TRUE,include_directories = TRUE)
+  zip::zip(zipfile = kmz,
+           files = files,
+           recurse = TRUE,
+           include_directories = TRUE)
 
   #
   #
@@ -194,3 +202,8 @@ concavemanWrapper <- function(multilinestring){
   fullPolygons <- rbind(set1.polys,set2.polys)
   return(fullPolygons)
 }
+
+
+
+
+

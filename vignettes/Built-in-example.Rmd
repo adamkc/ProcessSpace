@@ -53,11 +53,12 @@ rasterPlot <- h %>% rasterToPoints() %>% data.frame() %>%
 rasterPlot
 ```
 
-We like the look of stream segments *12* and *20* for further investigation.
-Let's pull those two aside and confirm we grabbed the right ones:
+Let's imagine we like the look of stream segments *12* and *20* for further investigation. It doesn't matter how we select these two segments as long as they're all we feed to the *ProcessSpace* functions. In this case, we'll use the dplyr::filter function to create a new object, selecting using the LINKNO field. But you could do a spatial filter or any number of other filter methods.
+
+Let's pull those two aside and confirm we grabbed the right ones by plotting the results. We'll highlight the two segments we selected in blue. The ProcessSpace tool currently can't handle branching stream structures so we need to be careful here.
 
 ```{r,fig.height=2.5,fig.width=4}
-targetStream <- streams %>% dplyr::filter(LINKNO %in% c(12,20))
+targetStream <- streams %>% dplyr::filter(LINKNO %in% c(12,20)) 
 #Check that you grabbed the right streams:
 ggplot(streams) + geom_sf() +
   geom_sf(data=targetStream,col="blue4",size=3,alpha=.6) +
@@ -77,8 +78,7 @@ transectObject <- targetStream %>%
   generateCrossSections(xSectionDensity = units::as_units(20,"m"),
                         googleZoom=16,
                         xSectionLength = units::as_units(100,"m"),
-                        cut1Dir = "W",
-                        cut2Dir = "E")
+                        cut1Dir = "W")
 ```
 
 ```{r}

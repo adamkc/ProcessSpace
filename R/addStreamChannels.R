@@ -9,13 +9,13 @@
 #'
 #' @examples
 addStreamChannels <- function(transectObject,
-                              sampleDensity = units::as_units(3,"m"),
+                              sampleDensity = units::as_units(6,"m"),
                               rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
-                              streamChannelFile = "GeoData/STREAM CHANNELS.shp",
+                              streamDir = "GeoData/STREAM CHANNELS.shp",
                               ...){
   ##Error Checks:
   if(!is.character(rasterDir)) error("rasterDir argument needs to be a character string")
-  if(!is.character(streamChannelFile)) error("rasterDir argument needs to be a character string")
+  if(!is.character(streamDir)) error("rasterDir argument needs to be a character string")
   ##
 
   cat(crayon::green("Adding Stream Channel Data"))
@@ -23,11 +23,16 @@ addStreamChannels <- function(transectObject,
   r <- raster::raster(rasterDir)
   mapToChange <- transectObject$satImage
 
-  bufferPoly <- sf::st_union(transectObject$leftSide,transectObject$rightSide) %>%
+  bufferPoly <- sf::st_union(transectObject$leftSide,
+                             transectObject$rightSide) %>%
     sf::st_bbox()
+  streams = sf::read_sf(streamDir)
+  if(sf::st_crs(bufferPoly) != sf::st_crs(streams)){
+    cat(crayon::white("mainLine and stream crs differnt. Transforming...  "))
+    streams <- streams %>% sf::st_transform(crs=sf::st_crs(bufferPoly))
+  }
 
-  sideChannelsPoints <- sf::read_sf(streamChannelFile) %>%
-    #sf::st_transform(crs=sf::st_crs(r)) %>%
+  sideChannelsPoints <-  sf::st_geometry(streams) %>%
     sf::st_crop(bufferPoly) %>%
     sf::st_cast("LINESTRING",warn=FALSE) %>%
     sf::st_line_sample(density = sampleDensity) %>%

@@ -22,8 +22,7 @@ rasterPlotter <- function(transectObject,
     matrix(2,byrow = TRUE) %>%
     data.frame() %>%
     sf::st_as_sf(coords=c("X2","X1"),crs=raster::crs(r)) %>%
-    sf::as_Spatial() %>%
-    sp::spTransform(raster::crs(r))
+    sf::as_Spatial() #%>% sp::spTransform(raster::crs(r)) #Commented out to remove sp package.
 
   mainLine_projected <- transectObject$mainLine %>%
     sf::st_transform(raster::crs(r))
@@ -52,8 +51,8 @@ rasterPlotter <- function(transectObject,
 
   deltaElPts <- transectObject$XSectionPlotData %>%
     dplyr::select(geometry,deltaEl) %>%
-    sf::as_Spatial() %>%
-    sp::spTransform(raster::crs(r))
+    sf::st_transform(sf::st_crs(r)) %>%
+    sf::as_Spatial() #%>% sp::spTransform(raster::crs(r)) #Commented out to remove sp package.
 
   r.new <- raster::raster(ext=raster::extent(r.clip),
                           ncol=ncol(r.clip),nrow=nrow(r.clip),

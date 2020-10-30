@@ -25,6 +25,8 @@ exportSpatials <- function(transectObject,
       #--
       if(!is.null(transectObject$mainLine))
         transectObject$mainLine %>%
+        sf::st_cast("MULTILINESTRING") %>%
+        sf::st_line_merge() %>%
         sf::as_Spatial() %>%
         plotKML::kml_layer(subfolder.name="mainLine",
                            colour="blue",width=5)
@@ -53,6 +55,8 @@ exportSpatials <- function(transectObject,
       #--
       if(!is.null(transectObject$leftSide))
         transectObject$leftSide %>%
+        sf::st_cast("MULTILINESTRING") %>%
+        sf::st_line_merge() %>%
         sf::st_as_sf() %>%
         sf::as_Spatial() %>%
         plotKML::kml_layer(subfolder.name="leftSide",
@@ -60,6 +64,8 @@ exportSpatials <- function(transectObject,
       #--
       if(!is.null(transectObject$rightSide))
         transectObject$rightSide %>%
+        sf::st_cast("MULTILINESTRING") %>%
+        sf::st_line_merge() %>%
         sf::st_as_sf() %>%
         sf::as_Spatial() %>%
         plotKML::kml_layer(subfolder.name="rightSide",
@@ -89,7 +95,7 @@ exportSpatials <- function(transectObject,
         plotKML::kml_layer(subfolder.name="ProcessPolygons_1ft",
                            colour="blue",fill="blue",alpha=.2,width=3,
                            balloon = TRUE)
-      #--
+      #---
       if(!is.null(transectObject$ProcessPolygons_2ft))
         transectObject$ProcessPolygons_2ft %>%
         sf::st_as_sf() %>%

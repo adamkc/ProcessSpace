@@ -13,65 +13,120 @@
 #'
 #' @examples
 #'
+
+
 generateCrossSections <- function(streamChannel,
                                   getSatImage=TRUE,
                                   googleZoom = 14,
                                   cut1Dir = "W",
-                                  cut2Dir = "E",
+                                  #cut2Dir = "E", #Depreciated No longer used
                                   xSectionLength = units::as_units(100,"m"),
                                   xSectionDensity = units::as_units(100,"m")){
 
 
+  cat(crayon::green("Realigning stream upstream to downstream."))
+  startTime <- Sys.time()
+
   Buff.bbox <- sf::st_bbox(streamChannel)
 
   if(cut1Dir == "W"){
-    cut1.far <- sf::st_point(c(Buff.bbox["xmin"]-50000,
+    cut1.far <- sf::st_point(c(Buff.bbox["xmin"]-10000,
                                mean(Buff.bbox[c("ymin","ymax")]))) %>%
       sf::st_sfc(crs=sf::st_crs(streamChannel))
   }
   if(cut1Dir == "E"){
-    cut1.far <- sf::st_point(c(Buff.bbox["xmax"]+50000,
+    cut1.far <- sf::st_point(c(Buff.bbox["xmax"]+10000,
                                mean(Buff.bbox[c("ymin","ymax")]))) %>%
       sf::st_sfc(crs=sf::st_crs(streamChannel))
   }
   if(cut1Dir == "N"){
     cut1.far <- sf::st_point(c(mean(Buff.bbox[c("xmin","xmax")]),
-                               Buff.bbox["ymax"]+50000))  %>%
+                               Buff.bbox["ymax"]+10000))  %>%
       sf::st_sfc(crs=sf::st_crs(streamChannel))
   }
   if(cut1Dir == "S"){
     cut1.far <- sf::st_point(c(mean(Buff.bbox[c("xmin","xmax")]),
-                               Buff.bbox["ymin"]-50000)) %>%
+                               Buff.bbox["ymin"]-10000)) %>%
       sf::st_sfc(crs=sf::st_crs(streamChannel))
   }
 
-  streamPts <-  streamChannel %>%
-    sf::st_cast("POINT",warn=FALSE) %>%
-    dplyr::mutate(dist = sf::st_distance(.,cut1.far)) %>%
-    dplyr::arrange(dist)
 
-  #streamPts$distFromFar = 1:nrow(streamPts)
-  distMat <- sf::st_distance(streamPts) %>%
-    as.numeric() %>%
-    matrix(nrow=nrow(streamPts))
-  newOrder <- 1
+  ##OLD STREAM REALIGNMENT---------
+  #
+  # NVerts = dim(streamChannel%>%
+  #                sf::st_cast("POINT",warn=FALSE))[1]
+  #
+  # streamPts <-  streamChannel  %>%
+  #
+  #   sf::st_line_sample(n=NVerts)%>%
+  #   sf::st_combine() %>%
+  #   sf::st_cast("POINT") %>%
+  #   sf::st_as_sf() %>%
+  #   #dplyr::select(geometry) %>%
+  #   #dplyr::mutate(dist = sf::st_distance(.,cut1.far)) %>%
+  #   dplyr::arrange(sf::st_distance(.,cut1.far)) #%>%
+  # #dplyr::select(-dist)
+  #
+  # #streamPts$distFromFar = 1:nrow(streamPts)
+  # distMat <- sf::st_distance(streamPts) %>%
+  #   as.numeric() %>%
+  #   matrix(nrow=nrow(streamPts))
+  # #temp <- distMat
+  # newOrder <- 1
+  # pointJump <- rep(0,nrow(streamPts))
+  #
+  # for(i in 1:nrow(streamPts)) {
+  #   thisPoint <- which(newOrder==i)[1]
+  #   distMat[thisPoint,] <- NA
+  #   nextPoint <- which.min(distMat[,thisPoint])
+  #   newOrder[nextPoint] <- i+1
+  #   if(i != nrow(streamPts))
+  #      pointJump[i] <- distMat[nextPoint,thisPoint]
+  # }
+  #
+  # streamPts$distFromTop <- newOrder
+  #
+  # streamPts <- streamPts[pointJump < (mean(pointJump)*5),]
+  #
+  # streamChannel.union <- streamPts %>%
+  #   dplyr::arrange(distFromTop) %>%
+  #   sf::st_combine() %>%
+  #   sf::st_cast("LINESTRING") %>%
+  #   sf::st_sf()
+    # sf::st_coordinates() %>%
+    # sf::st_linestring() %>%
+    # sf::st_sfc(crs=sf::st_crs(streamChannel))
 
-  for(i in 1:nrow(streamPts)) {
-    thisPoint <- which(newOrder==i)[1]
-    distMat[thisPoint,] <- NA
-    nextPoint <- which.min(distMat[,thisPoint])
-    newOrder[nextPoint] <- i+1
-  }
-
-  streamPts$distFromTop <- newOrder
-
-  streamChannel.union <- streamPts %>%
-    dplyr::arrange(distFromTop) %>%
+  temp <- streamChannel %>%
     sf::st_coordinates() %>%
-    sf::st_linestring() %>%
-    sf::st_sfc(crs=sf::st_crs(streamChannel))
+    data.frame() %>%
+    dplyr::group_by(L1) %>%
+    dplyr::summarize(X = c(dplyr::first(X),dplyr::last(X)),
+                     Y = c(dplyr::first(Y),dplyr::last(Y)),
+                     Place = c("first","last"),.groups="drop") %>%
+    sf::st_as_sf(coords=c("X","Y"),crs=sf::st_crs(streamChannel)) %>%
+    dplyr::mutate(distance = sf::st_distance(.,cut1.far,by_element=TRUE)) %>%
+    dplyr::group_by(L1) %>%
+    dplyr::summarize(doReverse = dplyr::first(distance)>
+                       dplyr::last(distance),
+                     meanDist = as.numeric(mean(distance)),.groups="drop") %>%
+    data.frame() %>% dplyr::select(L1,doReverse,meanDist)
 
-
+  streamChannel.union <-streamChannel %>%
+    sf::st_coordinates() %>%
+    data.frame() %>%
+    dplyr::left_join(temp,by="L1") %>%
+    dplyr::arrange(meanDist) %>%
+    dplyr::group_by(L1) %>%
+    dplyr::mutate(X=dplyr::case_when(doReverse==TRUE ~ rev(X),
+                                     TRUE ~ X),
+                  Y=dplyr::case_when(doReverse==TRUE ~ rev(Y),
+                                     TRUE ~ Y)) %>%
+    sf::st_as_sf(coords=c("X","Y"),crs=sf::st_crs(streamChannel)) %>%
+    sf::st_sf() %>%
+    sf::st_combine() %>%
+    sf::st_cast("LINESTRING") %>%
+    sf::st_sf()
 
   # streamChannel.union <- sf::st_union(streamChannel) %>%
   #   sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
@@ -80,39 +135,53 @@ generateCrossSections <- function(streamChannel,
   #   sf::st_sfc() %>%
   #   sf::st_transform(crs=sf::st_crs(streamChannel))
   # #streamChannel.union$Shape_Leng = st_length(streamChannel.union)
-
-  channelLength = sum(sf::st_length(streamChannel.union))
+  #channelLength = sum(sf::st_length(streamChannel.union))
 
   ####
-
+  ###TODO
+  ### Error here, dist = as.numeric() added 4 times below because error message:
+  #       Error in Ops.units(dist, 0) :
+  #           both operands of the expression should be "units" objects
+  ## Not sure what the fix is. So xSectionLength is measured in the units of the CRS
+  ## of othe streamChannel.union object.
   buff1 <- sf::st_buffer(streamChannel.union,
                          dist = as.numeric(xSectionLength),
                          nQuadSegs = 100,
                          singleSide=TRUE) %>%
-    smoothr::smooth("ksmooth",smoothness=20) %>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
-    sf::st_difference(y=sf::st_buffer(streamChannel %>% sf::st_union(),
-                                      dist = as.numeric(xSectionLength*0.95),
+    sf::st_difference(y=sf::st_buffer(streamChannel.union,
+                                      dist = as.numeric(xSectionLength*0.98),
                                       nQuadSegs = 100)) %>%
-    sf::st_cast("MULTILINESTRING") %>%
-    sf::st_transform(crs=sf::st_crs(streamChannel))
+    sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
+    sf::st_transform(crs=sf::st_crs(streamChannel))%>%
+    smoothr::smooth("ksmooth",smoothness=20)
 
 
   buff2 <- sf::st_buffer(streamChannel.union,
                          dist = as.numeric(-xSectionLength),
                          nQuadSegs = 100,
                          singleSide=TRUE)%>%
-    smoothr::smooth("ksmooth",smoothness=20) %>%
+
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_line_merge() %>%
-    sf::st_difference(y=sf::st_buffer(streamChannel %>% sf::st_union(),
-                                      dist = as.numeric(xSectionLength*0.95),
+    sf::st_difference(y=sf::st_buffer(streamChannel.union,
+                                      dist = as.numeric(xSectionLength*0.98),
                                       nQuadSegs = 100))%>%
-    sf::st_cast("MULTILINESTRING") %>%
-    sf::st_transform(crs=sf::st_crs(streamChannel))
+    sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
+    sf::st_transform(crs=sf::st_crs(streamChannel)) %>%
+    smoothr::smooth("ksmooth",smoothness=20)
 
-  leftSide <- buff1
-  rightSide <- buff2
+  buff1_small <-  sf::st_difference(buff1,
+                              y=sf::st_buffer(buff2,
+                                              dist = as.numeric(xSectionLength*1.4),
+                                              nQuadSegs = 100))
+  buff2_small <-  sf::st_difference(buff2,
+                              y=sf::st_buffer(buff1,
+                                              dist = as.numeric(xSectionLength*1.4),
+                                              nQuadSegs = 100))
+
+  buff1 <- buff1_small
+  buff2 <- buff2_small
 
   buff1.center <- sf::st_centroid(buff1) %>% sf::st_coordinates()
   buff2.center <- sf::st_centroid(buff2) %>% sf::st_coordinates()
@@ -154,6 +223,9 @@ generateCrossSections <- function(streamChannel,
       leftSide <- buff1
     }
   }
+
+  outputTimer(startTime)
+
 
   #
   #   Buff.Line <-
@@ -257,7 +329,7 @@ generateCrossSections <- function(streamChannel,
   #   return(line)
   #   }) %>% do.call("rbind", .)
 
-  plotBbox.WGS <- c(leftSide,rightSide) %>%
+  plotBbox.WGS <- sf::st_union(leftSide,rightSide) %>%
     sf::st_transform(crs=4326) %>%
     sf::st_bbox()
 
@@ -278,7 +350,7 @@ generateCrossSections <- function(streamChannel,
     # satImage <- NULL
   }
 
-  output <- list(mainLine = streamChannel,
+  output <- list(mainLine = streamChannel.union,
                  leftSide = leftSide,
                  rightSide = rightSide,
                  ls0 = ls0,
