@@ -17,24 +17,26 @@ allAtOnce <- function(transectObject,
                       returnObject=FALSE,
                       doExportSpatial=FALSE,
                       ...){
+
+  pdfName <- paste0(tools::file_path_sans_ext(outputFilename),".pdf")
+
   suppressWarnings(
     suppressMessages({
-      transectObject <- transectObject %>%
-        addTopoLines(...) %>%
-        addStreamChannels(...) %>%
-        addCrossSectionElevations(...) %>%
-        addProcessSpace() %>%
-        buildXSectionPlot(plotFileName = outputFilename,...)
+      transectObject <- addTopoLines(transectObject,
+                                     ...)
+      transectObject <- addCrossSectionElevations(transectObject,
+                                                  ...)
+      transectObject <- addProcessSpace(transectObject)
+      transectObject <- buildXSectionPlot(transectObject,
+                                          plotFileName = pdfName,
+                                          ...)
+
       if(detrendElevs){
-        transectObject <- transectObject %>%
-          rasterPlotter(...)
+        transectObject <- rasterPlotter(transectObject,
+                                        ...)
       }
-      # transectObject <- transectObject %>%
-      #   buildXSectionPlot(plotFileName = outputFilename,
-      #                     returnData=TRUE)
     })
   )
-  #print(names(transectObject))
   if(doExportSpatial)
     exportSpatials(transectObject,
                    sectionName = tools::file_path_sans_ext(outputFilename))
