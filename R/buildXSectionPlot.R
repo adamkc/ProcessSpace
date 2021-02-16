@@ -14,7 +14,7 @@ buildXSectionPlot <- function(transectObject,
                               plotFileName = "test.png",
                               returnData=TRUE,
                               verticalCutoff = 4,
-                              streamDir="GeoData/STREAM CHANNELS.shp",
+                              streamDir=NULL,
                               ...){
 
   if(is.null(transectObject$XsectionElevations)){

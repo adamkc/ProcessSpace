@@ -3,6 +3,7 @@
 #' @param transectObject
 #' @param sectionName
 #' @param addXSectionPlots
+#' @param rasterPaletteLimits
 #'
 #' @return
 #' @export
@@ -10,7 +11,8 @@
 #' @examples
 exportSpatials <- function(transectObject,
                            sectionName="temp",
-                           addXSectionPlots=TRUE){
+                           addXSectionPlots=TRUE,
+                           rasterPaletteLims = c(-2,2)){
 
   colorPalatte <- plotKML::SAGA_pal[[21]]#$SG_COLORS_GREEN_RED_BLUE
   suppressMessages({
@@ -132,14 +134,18 @@ exportSpatials <- function(transectObject,
                            colour="green",alpha=.2,width=3)
       #--
       #outerBoundsRange <- max(abs(range(transectObject$XSectionPlotData$deltaEl)))
-      if(!is.null(transectObject$detrendedRaster))
-        plotKML::kml_layer(obj = transectObject$detrendedRaster,
+
+      if(!is.null(transectObject$detrendedRaster)){
+        tempRaster <- raster::raster(transectObject$detrendedRaster)
+        tempRaster[tempRaster < rasterPaletteLims[1]] <- rasterPaletteLims[1]
+        tempRaster[tempRaster > rasterPaletteLims[2]] <- rasterPaletteLims[2]
+        tempRaster[1:2,1] <- rasterPaletteLims
+        plotKML::kml_layer(obj = tempRaster,
                            subfolder.name="Height Above Water",
                            raster_name = paste0(sectionName,"_temp_","El.png"),
                            colour=DetrendedElevation,
-                           z.lim=c(-4,4),
                            colour_scale=SAGA_pal[[21]])
-
+      }
 
       #Wrap it up:
       plotKML::kml_close(file.name=paste0(sectionName,"_temp_.kml"))

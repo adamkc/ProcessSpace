@@ -67,20 +67,11 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
                          ggplot2::aes(x=metersLength,y=deltaEl),fill="khaki3") +
       ggplot2::geom_line(data=df,
                          ggplot2::aes(x=metersLength,y=deltaEl),col="orange3") +
-      # geom_area(data=df %>% dplyr::filter(deltaEl>0),
-      #           aes(x=metersLength,y=deltaEl),fill="khaki3") +
-      # geom_line(data=df %>% dplyr::filter(deltaEl>0),
-      #           aes(x=metersLength,y=deltaEl),col="orange3") +
-      # geom_area(data=df %>% dplyr::filter(deltaEl<0),
-      #           aes(x=metersLength,y=deltaEl),fill="blue4",alpha=.3) +
-      # geom_line(data=df %>% dplyr::filter(deltaEl<0),
-      #           aes(x=metersLength,y=deltaEl),col="orange3") +
       ggplot2::geom_hline(yintercept = 0,linetype=3,size=.3) +
       ggplot2::geom_hline(yintercept = 0.3,linetype=2,alpha=.8,col="blue3",size=.3) +
       ggplot2::geom_hline(yintercept = 0.6,linetype=2,alpha=.5,col="green3",size=.3) +
       ggplot2::geom_vline(xintercept = 0,col="royalblue2",alpha=.5,size=.3) +
       ggplot2::theme_classic() +
-      #coord_fixed(ratio=20) +
       ggplot2::ylab("Height above channel (m)") +
       ggplot2::xlab("Distance off channel (m)") +
       ggplot2::ggtitle(paste0("Transect_",df$Transect[1])) +
@@ -95,8 +86,9 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
   temp <- transectObject$XSectionPlotData %>%
     data.frame()
   numPlots <- length(unique(temp$Transect))
-  cat(crayon::yellow(sprintf("There are %s ggplots being generated",numPlots)))
+  cat(crayon::yellow(sprintf("There are %s ggplots being generated.\n",numPlots)))
   for(i in unique(temp$Transect)){
+    cat(paste0(i,", "))
     temp %>% dplyr::filter(Transect==i) %>% plotter()
   }
 
@@ -178,7 +170,7 @@ concavemanWrapper <- function(multilinestring){
     dplyr::mutate(set1 = ceiling(dplyr::row_number()/2),
                   set2 = floor(dplyr::row_number()/2)) %>%
     sf::st_cast("POINT",warn=FALSE)
-
+  ##These four calls to purrr are the only place purrr is used in ProcessSpace (As of Feb 2021). Remove asap.
   set1.polys <- purrr::map(unique(temp$set1),
                            ~ concaveman::concaveman(temp[temp$set1 %in% .,])) %>%
     purrr::reduce(rbind) %>%

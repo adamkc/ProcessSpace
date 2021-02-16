@@ -154,7 +154,7 @@ generateCrossSections <- function(streamChannel,
                                       nQuadSegs = 100)) %>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_transform(crs=sf::st_crs(streamChannel))%>%
-    smoothr::smooth("ksmooth",smoothness=20)
+    smoothr::smooth("ksmooth",smoothness=20)   #One of two calls to smoothr. Maybe seek alternatives?
 
 
   buff2 <- sf::st_buffer(streamChannel.union,
@@ -169,7 +169,7 @@ generateCrossSections <- function(streamChannel,
                                       nQuadSegs = 100))%>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_transform(crs=sf::st_crs(streamChannel)) %>%
-    smoothr::smooth("ksmooth",smoothness=20)
+    smoothr::smooth("ksmooth",smoothness=20) #One of two calls to smoothr. Maybe seek alternatives?
 
   buff1_small <-  sf::st_difference(buff1,
                               y=sf::st_buffer(buff2,
@@ -252,7 +252,7 @@ generateCrossSections <- function(streamChannel,
   #             sf::st_nearest_points(Buff.Line,cut2.far))
   #
   #   Buff.Line.split <-
-  #     lwgeom::st_split(Buff.Line,cuts) %>%
+  #     lwgeom::st_split(Buff.Line,cuts) %>% #removed lwgeom from DESCRIPTION FILE since this line is commented out.
   #     sf::st_collection_extract(type = "LINESTRING")
   #   rightSide <- cut1 <- sf::st_union(Buff.Line.split[1],Buff.Line.split[3]) #RightSide
   #   leftSide <- cut2 <- Buff.Line.split[2] #LeftSide

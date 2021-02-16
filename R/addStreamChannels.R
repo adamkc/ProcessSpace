@@ -15,7 +15,7 @@ addStreamChannels <- function(transectObject,
                               ...){
   ##Error Checks:
   if(!is.character(rasterDir)) error("rasterDir argument needs to be a character string")
-  if(!is.character(streamDir)) error("rasterDir argument needs to be a character string")
+  if(!is.character(streamDir)) error("streamDir argument needs to be a character string")
   ##
 
   cat(crayon::green("Adding Stream Channel Data"))

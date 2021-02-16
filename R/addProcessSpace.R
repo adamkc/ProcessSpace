@@ -9,6 +9,10 @@ addProcessSpace <- function(transectObject){
   cat(crayon::green("Calculating Process Space Polygons"))
   startTime <- Sys.time()
 
+  ##ErrorCheck:
+  if(is.null(transectObject$XsectionElevations)){
+    return(cat(crayon::red("\nNot generating Process Space Polygons: Xsection plot data missing. \nRun 'addCrossSectionElevations()' first. ")))
+  }
 
   BufferLengths <-
     transectObject$XsectionElevations %>% data.frame() %>%

@@ -52,12 +52,12 @@ rasterPlotter <- function(transectObject,
   deltaElPts <- transectObject$XSectionPlotData %>%
     dplyr::select(geometry,deltaEl) %>%
     sf::st_transform(sf::st_crs(r)) %>%
-    sf::as_Spatial() #%>% sp::spTransform(raster::crs(r)) #Commented out to remove sp package.
+    sf::as_Spatial()
 
   r.new <- raster::raster(ext=raster::extent(r.clip),
                           ncol=ncol(r.clip),nrow=nrow(r.clip),
                           crs=raster::crs(r.clip)) %>%
-    methods::as('SpatialPixels')
+    methods::as('SpatialPixels')  ## As of Feb 2021, this is only call to Methods. Alternatives?
 
   # print("DeltaEL")
   # print(sf::st_crs(deltaElPts))
