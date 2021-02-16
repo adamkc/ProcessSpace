@@ -33,6 +33,27 @@ install_github('adamkc/ProcessSpace')
 library(ProcessSpace)
 ```
 
+This package requires a few spatial packages that themselves have many requirements. This installation process doesn't always go smoothly/perfectly. It may try to update 30-50 packages and throw an error along the way..  *`ProcessSpace`* requires the following packages (with versions updated since 2020, roughly.) If you hit issues, consider just installing these packages first, slowly, one at a time, and then retrying installing `ProcessSpace`.
+
+``` r
+  install.packages("dplyr")
+  install.packages("tidyr")
+  install.packages("purrr")
+  install.packages("ggplot2")
+  install.packages("cowplot")
+  install.packages("magrittr")
+  install.packages("ggmap")
+  install.packages("sf")
+  install.packages("plotKML")
+  install.packages("raster")
+  install.packages("concaveman")
+  install.packages("crayon")
+  install.packages("gstat")
+  install.packages("smoothr")
+  install.packages("units")
+  install.packages("zip")
+```
+
 ### Inputs
 
 1. Digital Terrain Model
