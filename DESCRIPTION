@@ -29,10 +29,10 @@ Imports:
     raster (>= 3.0-2),
     concaveman,
     crayon (>= 1.3.4),
-    gstat (>= 2.0-4,
+    gstat (>= 2.0-4),
     methods,
     smoothr (>= 0.1.2),
-    units (>= 0.6-7,
+    units (>= 0.6-7),
     zip (>= 2.1.0)
 
 
