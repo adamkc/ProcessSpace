@@ -38,6 +38,7 @@ need to supply your own raster DEM and streamline shapefile eventually.
 ```{r}
 rasterFilePath <- system.file("external/raster.tif", package="ProcessSpace")
 streamShapefilePath <- system.file("external/streams.shp", package="ProcessSpace")
+streams <- sf::read_sf(streamShapefilePath)
 ```
 
 And now lets plot the raster hillshade. It takes a little time to calculate the hillshade
@@ -45,7 +46,6 @@ values. This step isn't necessary for running the `ProcessSpace` tool.
 
 ```{r}
 r <- raster::raster(rasterFilePath)
-streams <- sf::read_sf(streamShapefilePath)
 s <- raster::terrain(r, opt="slope")
 a <- raster::terrain(r, opt="aspect")
 h <- raster::hillShade(s,a)

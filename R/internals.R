@@ -54,7 +54,28 @@ outputTimer <- function(startTime){
 exportIndividualXSectionPlots <- function(transectObject,sectionName){
   dir <- paste0(sectionName,"-Images")
   if(!dir.exists(dir)) dir.create(dir)
-  plotter <- function(df){
+  ###
+  insetPlotter <- function(i){
+    ggplot() +
+      geom_sf(data=transectObject$mainLine,
+              col="blue2") +
+      geom_sf(data=transectObject$sampledPoints,
+              col="black",size=0.6) +
+      geom_sf(data=transectObject$sampledPoints %>%
+                dplyr::filter(pointID==i),
+              col="red2",size=1.5) +
+      geom_sf(data=transectObject$ls0 %>%
+                dplyr::filter(pointID==i),
+              col="green2") +
+      geom_sf(data=transectObject$rs0 %>%
+                dplyr::filter(pointID==i),
+              col="green2") +
+      theme_nothing() +
+      theme(panel.border = element_rect(fill = NA)) +
+      coord_sf()
+  }
+  ###
+  plotter <- function(df,insetPlot=NULL){
     filename <- file.path(dir,paste0("Transect_",df$Transect[1],"_temp_.png"))
     plot <- ggplot2::ggplot(df,ggplot2::aes(x=metersLength,y=deltaEl)) +
       ggplot2::annotate("rect", xmin = -Inf, xmax = Inf,
@@ -79,7 +100,16 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
                          hjust=-.4,vjust=-.3,alpha=.5,size=2) +
       ggplot2::theme(text=ggplot2::element_text(size=4)) +
       ggplot2::xlim(min(df$metersLength),max(df$metersLength))
-    ggplot2::ggsave(filename = filename,plot = plot,height=2,width=4,dpi=150)
+    if(is.null(insetPlot))
+    {
+      ggplot2::ggsave(filename = filename,plot = plot,height=2,width=4,dpi=150)
+    } else
+    {
+      gg_all <- cowplot::ggdraw() +
+        cowplot::draw_plot(plot) +
+        cowplot::draw_plot(insetPlot,x=0.7,y=0.7,width=.3,height=.3)
+      ggplot2::ggsave(filename = filename,plot = gg_all,height=2,width=4,dpi=150)
+    }
 
   }
 
@@ -89,9 +119,9 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
   cat(crayon::yellow(sprintf("There are %s ggplots being generated.\n",numPlots)))
   for(i in unique(temp$Transect)){
     cat(paste0(i,", "))
-    temp %>% dplyr::filter(Transect==i) %>% plotter()
+    inset <- insetPlotter(i)
+    temp %>% dplyr::filter(Transect==i) %>% plotter(insetPlot = inset)
   }
-
 }
 
 
