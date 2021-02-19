@@ -56,23 +56,23 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
   if(!dir.exists(dir)) dir.create(dir)
   ###
   insetPlotter <- function(i){
-    ggplot() +
-      geom_sf(data=transectObject$mainLine,
+    ggplot2::ggplot() +
+      ggplot2::geom_sf(data=transectObject$mainLine,
               col="blue2") +
-      geom_sf(data=transectObject$sampledPoints,
+      ggplot2::geom_sf(data=transectObject$sampledPoints,
               col="black",size=0.6) +
-      geom_sf(data=transectObject$sampledPoints %>%
+      ggplot2::geom_sf(data=transectObject$sampledPoints %>%
                 dplyr::filter(pointID==i),
               col="red2",size=1.5) +
-      geom_sf(data=transectObject$ls0 %>%
+      ggplot2::geom_sf(data=transectObject$ls0 %>%
                 dplyr::filter(pointID==i),
               col="green2") +
-      geom_sf(data=transectObject$rs0 %>%
+      ggplot2::geom_sf(data=transectObject$rs0 %>%
                 dplyr::filter(pointID==i),
               col="green2") +
-      theme_nothing() +
-      theme(panel.border = element_rect(fill = NA)) +
-      coord_sf()
+      cowplot::theme_nothing() +
+      ggplot2::theme(panel.border = ggplot2::element_rect(fill = NA)) +
+      ggplot2::coord_sf()
   }
   ###
   plotter <- function(df,insetPlot=NULL){
