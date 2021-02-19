@@ -16,7 +16,7 @@ addCrossSectionElevations(
 \item{rasterDir}{Directory containing the LiDAR raster dataset}
 }
 \value{
-
+transectObject with the cross section elevations added.
 }
 \description{
 addCrossSectionElevations

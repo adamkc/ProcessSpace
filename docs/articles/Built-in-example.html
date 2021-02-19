@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.032</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.033</span>
       </span>
     </div>
 
@@ -112,10 +112,10 @@
 <a href="#load-the-data-files-and-check-them" class="anchor"></a>Load the Data files and check them</h2>
 <p>These are generic files that are provided with the <code>ProcessSpace</code> package. You’ll need to supply your own raster DEM and streamline shapefile eventually.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">rasterFilePath</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/raster.tif"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
-<span class="no">streamShapefilePath</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/streams.shp"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)</pre></body></html></div>
+<span class="no">streamShapefilePath</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/streams.shp"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
+<span class="no">streams</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">streamShapefilePath</span>)</pre></body></html></div>
 <p>And now lets plot the raster hillshade. It takes a little time to calculate the hillshade values. This step isn’t necessary for running the <code>ProcessSpace</code> tool.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">r</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span>(<span class="no">rasterFilePath</span>)
-<span class="no">streams</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">streamShapefilePath</span>)
 <span class="no">s</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/terrain.html">terrain</a></span>(<span class="no">r</span>, <span class="kw">opt</span><span class="kw">=</span><span class="st">"slope"</span>)
 <span class="no">a</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/terrain.html">terrain</a></span>(<span class="no">r</span>, <span class="kw">opt</span><span class="kw">=</span><span class="st">"aspect"</span>)
 <span class="no">h</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/hillShade.html">hillShade</a></span>(<span class="no">s</span>,<span class="no">a</span>)
@@ -154,7 +154,7 @@
                         <span class="kw">googleZoom</span><span class="kw">=</span><span class="fl">16</span>,
                         <span class="kw">xSectionLength</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">100</span>,<span class="st">"m"</span>),
                         <span class="kw">cut1Dir</span> <span class="kw">=</span> <span class="st">"W"</span>)</pre></body></html></div>
-<pre><code>## Realigning stream upstream to downstream. -- Completed in 0.05 mins.</code></pre>
+<pre><code>## Realigning stream upstream to downstream. -- Completed in 0.04 mins.</code></pre>
 <p>We can peek into the <code>transectObject</code> that is returned by this function. It should be a list with 8 named entries (<code>mainLine</code>, <code>leftSide</code>, <code>rightSide</code>, <code>ls0</code>, <code>rs0</code>, <code>plotBbox</code>, <code>satImage</code>, and <code>sampledPoints</code>). We stop the process here with our generated cross sections to be used for another purpose. Or we can proceed to additional <code>*ProcessSpace*</code> functions.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">transectObject</span>$<span class="no">satImage</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span>() +
   <span class="fu">geom_sf</span>(<span class="kw">data</span><span class="kw">=</span><span class="no">transectObject</span>$<span class="no">mainLine</span> <span class="kw">%&gt;%</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fl">4326</span>),
@@ -191,9 +191,9 @@
                              <span class="kw">returnObject</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
                              <span class="kw">doExportSpatial</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <pre><code>## Adding TopoLines -- Completed in 0.02 mins.
-## Extracting Cross Section Elevations -- Completed in 0.06 mins.
+## Extracting Cross Section Elevations -- Completed in 0.05 mins.
 ## Calculating Process Space Polygons -- Completed in 0.08 mins.
-## Generating Map Plot -- Completed in 0.01 mins.</code></pre>
+## Generating Map Plot -- Completed in 0 mins.</code></pre>
 <pre><code>## Generating Detrended Elevation Raster[inverse distance weighted interpolation]
 ##  -- Completed in 0.11 mins.</code></pre>
 </div>

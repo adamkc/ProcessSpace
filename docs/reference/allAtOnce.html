@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.032</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.033</span>
       </span>
     </div>
 
@@ -136,7 +136,7 @@
   <span class='no'>transectObject</span>,
   <span class='no'>outputFilename</span>,
   <span class='kw'>detrendElevs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>returnObject</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>returnObject</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>doExportSpatial</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='no'>...</span>
 )</pre>
@@ -149,16 +149,37 @@
       <td><p>Object created by the <code>generateCrossSections</code> function</p></td>
     </tr>
     <tr>
+      <th>outputFilename</th>
+      <td><p>This is the name of the pdf file that is generated as
+well as the KMZ if spatial files are exported.</p></td>
+    </tr>
+    <tr>
+      <th>detrendElevs</th>
+      <td><p>Logical (<strong>TRUE</strong>). Calculated a detrended raster file.
+Can be computationally expensive, especially with long target stream lengths.</p></td>
+    </tr>
+    <tr>
+      <th>returnObject</th>
+      <td><p>Logical (<strong>FALSE</strong>). Whether or not to return an R object
+for additional analysis. If FALSE, NULL is returned.</p></td>
+    </tr>
+    <tr>
       <th>doExportSpatial</th>
-      <td></td>
+      <td><p>Logical (<strong>FALSE</strong>). Whether or not to generate KML
+exports. If both this and <code>returnObject</code> are FALSE, a pdf map and cross
+section plot are exported and nothing else.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additonal arguments to be passed to <code>addTopoLines</code>,
+<code>addCrossSectionElevations</code>, <code>buildXSectionPlot</code>, or
+<code>rasterPlotter</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
+    <p>Either a transectObject or NULL</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

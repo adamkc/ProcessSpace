@@ -4,10 +4,15 @@
 \alias{exportSpatials}
 \title{exportSpatials}
 \usage{
-exportSpatials(transectObject, sectionName = "temp", addXSectionPlots = TRUE)
+exportSpatials(
+  transectObject,
+  sectionName = "temp",
+  addXSectionPlots = TRUE,
+  rasterPaletteLims = c(-2, 2)
+)
 }
 \arguments{
-\item{addXSectionPlots}{}
+\item{rasterPaletteLimits}{}
 }
 \value{
 

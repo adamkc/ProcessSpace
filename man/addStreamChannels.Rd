@@ -6,14 +6,18 @@
 \usage{
 addStreamChannels(
   transectObject,
-  sampleDensity = units::as_units(3, "m"),
+  sampleDensity = units::as_units(6, "m"),
   rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
-  streamChannelFile = "GeoData/STREAM CHANNELS.shp",
+  streamDir = "GeoData/STREAM CHANNELS.shp",
   ...
 )
 }
 \arguments{
-\item{rasterDir}{}
+\item{transectObject}{Object created by the \code{generateCrossSections} function}
+
+\item{sampleDensity}{The precision of the}
+
+\item{rasterDir}{The file location of the DEM file.}
 }
 \value{
 

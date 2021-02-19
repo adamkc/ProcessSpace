@@ -5,16 +5,10 @@
 \title{kml_compress_fixed This function is based on the kml_compress from plotKML
 but fixes a bug with including files}
 \usage{
-kml_compress_fixed(
-  file.name,
-  zip = Sys.getenv("R_ZIPCMD", "zip"),
-  files = "",
-  rm = FALSE,
-  ...
-)
+kml_compress_fixed(file.name, files = "", removeTemps = TRUE)
 }
 \arguments{
-\item{...}{}
+\item{removeTemps}{}
 }
 \value{
 

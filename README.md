@@ -33,7 +33,7 @@ install_github('adamkc/ProcessSpace')
 library(ProcessSpace)
 ```
 
-This package requires a few spatial packages that themselves have many requirements. This installation process doesn't always go smoothly/perfectly. It may try to update 30-50 packages and throw an error along the way..  *`ProcessSpace`* requires the following packages (with versions updated since 2020, roughly.) If you hit issues, consider just installing these packages first, slowly, one at a time, and then retrying installing `ProcessSpace`.
+This package requires a few spatial packages that themselves have many requirements. This installation process doesn't always go smoothly/perfectly. It may try to update 30-50 packages and throw an error along the way..  **`ProcessSpace`** requires the following packages (with versions updated since 2020, roughly.) If you hit issues, consider just installing these packages first, slowly, one at a time, and then retrying installing `ProcessSpace`.
 
 ``` r
   install.packages("dplyr")
@@ -73,24 +73,25 @@ The example below will produce a KMZ file to load into Google Earth.
 
 ``` r
 library(ProcessSpace)
-library(ggmap) # necessary to load credentials.
+library(ggmap) # necessary to load google credentials for sat imagery. Not required.
 
-rasterDir <- system.file("external/raster.tif", package="ProcessSpace")
-streamsDir <- system.file("external/streams.shp", package="ProcessSpace")
-streams <- sf::read_sf(streamsDir)
+#Filepath to raster DEM (change to your own file):
+rasterLocation <- system.file("external/raster.tif", package="ProcessSpace") 
+#Filepath to stream shapefile (change to your own file):
+streamLocation <- system.file("external/streams.shp", package="ProcessSpace") 
+streams <- sf::read_sf(streamLocation)
+#Pick a target stream for analysis: (`LINKNO` is the FID in this shapefile)
 targetStream <- streams %>% dplyr::filter(LINKNO %in% c(12,20))
 
 
 targetStream %>%
-  generateCrossSections(xSectionDensity = units::as_units(100,"m"),
-                        googleZoom=16,
-                        xSectionLength = units::as_units(100,"m"),
-                        cut1Dir = "W",
-                        cut2Dir = "E") %>% 
+  generateCrossSections(xSectionDensity = units::as_units(100,"m"), # How often cross sections are taken.
+                        googleZoom=16,                              # Pick appropiate Google zoom level.
+                        xSectionLength = units::as_units(100,"m"),  # How far from channel to extend cross sections.
+                        cut1Dir = "W") %>%                          # cut1Dir: cardinal direction of upstream point of targetstream
   allAtOnce(outputFilename = "exampleOutput.pdf",
-            rasterDir = rasterDir,
-            verticalCutoff=8,
-            streamChannelFile = streamsDir,
+            rasterDir = rasterLocation,
+            streamDir = streamLocation,
             returnObject = FALSE,
             doExportSpatial = TRUE)
 ```

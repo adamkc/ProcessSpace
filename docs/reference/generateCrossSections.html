@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Generate Stream Cross Sections — generateCrossSections" />
-<meta property="og:description" content="Generate Stream Cross Sections" />
+<meta property="og:description" content="
+
+" />
 
 
 
@@ -72,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.032</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.033</span>
       </span>
     </div>
 
@@ -129,7 +131,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Generate Stream Cross Sections</p>
+    
+
+
     </div>
 
     <pre class="usage"><span class='fu'>generateCrossSections</span>(
@@ -138,7 +142,7 @@
   <span class='kw'>googleZoom</span> <span class='kw'>=</span> <span class='fl'>14</span>,
   <span class='kw'>cut1Dir</span> <span class='kw'>=</span> <span class='st'>"W"</span>,
   <span class='kw'>cut2Dir</span> <span class='kw'>=</span> <span class='st'>"E"</span>,
-  <span class='kw'>xSectionLength</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>xSectionLength</span> <span class='kw'>=</span> <span class='kw pkg'>units</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/units/man/as_units.html'>as_units</a></span>(<span class='fl'>100</span>, <span class='st'>"m"</span>),
   <span class='kw'>xSectionDensity</span> <span class='kw'>=</span> <span class='kw pkg'>units</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/units/man/as_units.html'>as_units</a></span>(<span class='fl'>100</span>, <span class='st'>"m"</span>)
 )</pre>
 
@@ -146,16 +150,47 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>streamChannel</th>
+      <td><p>The target stream reach. This should be a single
+contiguous streamline. No forking or gaps.</p></td>
+    </tr>
+    <tr>
+      <th>getSatImage</th>
+      <td><p>Logical (<strong>TRUE</strong>). This determines whether to download
+satellite imagery. It requires a Google Authentication Key. See
+<code><a href='https://rdrr.io/pkg/ggmap/man/register_google.html'>ggmap::register_google()</a></code> to set up satellite imagery.</p></td>
+    </tr>
+    <tr>
+      <th>googleZoom</th>
+      <td><p>Zoom level of satellite imagery. 15-17 typically work.</p></td>
+    </tr>
+    <tr>
+      <th>cut1Dir</th>
+      <td><p>Important! Set this to the cardinal direction ("W","N","E","S")
+of the upstream end of the target streamline.</p></td>
+    </tr>
+    <tr>
+      <th>cut2Dir</th>
+      <td><p>Depreciated. No longer used.</p></td>
+    </tr>
+    <tr>
+      <th>xSectionLength</th>
+      <td><p>Length of cross sections away from the channel. Consider
+using <code><a href='https://rdrr.io/pkg/units/man/as_units.html'>units::as_units(100,"m")</a></code> format.</p></td>
+    </tr>
+    <tr>
       <th>xSectionDensity</th>
-      <td></td>
+      <td><p>Gap space between cross sections.Consider
+using <code><a href='https://rdrr.io/pkg/units/man/as_units.html'>units::as_units(20,"m")</a></code> format.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
+    <p>transectObject.  This object will be passed onto additional function
+ in `ProcessSpace`. Initially it is returned with just, streamline, boundary
+  of transects, transect lines, a bounding box, the retreived google or
+  Stamen map, and the points where the cross sections cross the streamline.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>

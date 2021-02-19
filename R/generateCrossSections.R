@@ -1,14 +1,28 @@
 #' Generate Stream Cross Sections
 #'
-#' @param streamChannel
-#' @param getSatImage
-#' @param googleZoom
-#' @param cut1Dir
-#' @param cut2Dir
-#' @param xSectionLength
-#' @param xSectionDensity
+#' This is the first function to run when using the \code{ProcessSpace` package. It
+#' generates a TransectObject object that is the passed to additional functions
+#' to add additional details like cross section elevations and to generate
+#' spatial exports.
 #'
-#' @return
+#' @param streamChannel  The target stream reach. This should be a single
+#'   contiguous streamline. No forking or gaps.
+#' @param getSatImage Logical (\strong{TRUE}). This determines whether to download
+#'   satellite imagery. It requires a Google Authentication Key. See
+#'   \code{ggmap::register_google()} to set up satellite imagery.
+#' @param googleZoom Zoom level of satellite imagery. 15-17 typically work.
+#' @param cut1Dir Important! Set this to the cardinal direction ("W","N","E","S")
+#'  of the upstream end of the target streamline.
+#' @param cut2Dir Depreciated. No longer used.
+#' @param xSectionLength Length of cross sections away from the channel. Consider
+#'  using \code{units::as_units(100,"m")} format.
+#' @param xSectionDensity Gap space between cross sections.Consider
+#'  using \code{units::as_units(20,"m")} format.
+#'
+#' @return transectObject.  This object will be passed onto additional function
+#'  in `ProcessSpace`. Initially it is returned with just, streamline, boundary
+#'   of transects, transect lines, a bounding box, the retreived google or
+#'   Stamen map, and the points where the cross sections cross the streamline.
 #' @export
 #'
 #' @examples
@@ -19,9 +33,16 @@ generateCrossSections <- function(streamChannel,
                                   getSatImage=TRUE,
                                   googleZoom = 14,
                                   cut1Dir = "W",
-                                  #cut2Dir = "E", #Depreciated No longer used
+                                  cut2Dir = "E", #Depreciated No longer used
                                   xSectionLength = units::as_units(100,"m"),
                                   xSectionDensity = units::as_units(100,"m")){
+
+  ##ERROR CHECKS:
+  if(!(cut1Dir %in% c("W","N","E","S"))){
+    cat(crayon::red("cut1Dir not in c(\"W\",\"N\",\"E\",\"S\").
+                      Defaulting to \"W\" which may impact left/right side labeling."))
+    cut1Dir <- "W"
+  }
 
 
   cat(crayon::green("Realigning stream upstream to downstream."))
@@ -227,36 +248,6 @@ generateCrossSections <- function(streamChannel,
   outputTimer(startTime)
 
 
-  #
-  #   Buff.Line <-
-  #     sf::st_buffer(streamChannel %>% sf::st_union(),
-  #                   dist = xSectionLength,nQuadSegs = 100) %>%
-  #     smoothr::smooth("ksmooth",smoothness=20) %>%
-  #     sf::st_cast("MULTILINESTRING",warn=FALSE)
-  #
-  #   if(cut2Dir == "W"){
-  #     cut2.far <- sf::st_point(c(Buff.bbox["xmin"]-10000,
-  #                            mean(Buff.bbox[c("ymin","ymax")])))}
-  #   if(cut2Dir == "E"){
-  #     cut2.far <- sf::st_point(c(Buff.bbox["xmax"]+10000,
-  #                            mean(Buff.bbox[c("ymin","ymax")])))}
-  #   if(cut2Dir == "N"){
-  #     cut2.far <- sf::st_point(c(mean(Buff.bbox[c("xmin","xmax")]),
-  #                            Buff.bbox["ymax"]+10000))}
-  #   if(cut2Dir == "S"){
-  #     cut2.far <- sf::st_point(c(mean(Buff.bbox[c("xmin","xmax")]),
-  #                            Buff.bbox["ymin"]-10000))}
-  #   cut2.far <- cut2.far %>% sf::st_sfc(crs=raster::crs(streamChannel))
-  #
-  #   cuts <- c(sf::st_nearest_points(Buff.Line,cut1.far),
-  #             sf::st_nearest_points(Buff.Line,cut2.far))
-  #
-  #   Buff.Line.split <-
-  #     lwgeom::st_split(Buff.Line,cuts) %>% #removed lwgeom from DESCRIPTION FILE since this line is commented out.
-  #     sf::st_collection_extract(type = "LINESTRING")
-  #   rightSide <- cut1 <- sf::st_union(Buff.Line.split[1],Buff.Line.split[3]) #RightSide
-  #   leftSide <- cut2 <- Buff.Line.split[2] #LeftSide
-
   ##############
   sampledPoints <- sf::st_line_sample(streamChannel.union,
                                       density= xSectionDensity,
@@ -266,38 +257,6 @@ generateCrossSections <- function(streamChannel,
     dplyr::mutate(pointID = rev(1:dplyr::n()))
 
 
-    # dplyr::mutate(dist = sf::st_distance(.,cut1.far),
-    #               test = dplyr::first(dist)>dplyr::last(dist),
-    #               pointID = ifelse(test,
-    #                                1:dplyr::n(),
-    #                                rev(1:dplyr::n()))) %>%
-    # dplyr::select(-test,-dist)
-
-  # sampledPoints_ls <- sf::st_line_sample(leftSide %>%
-  #                                          sf::st_cast("LINESTRING",
-  #                                                      warn=FALSE),
-  #                                        n= nrow(sampledPoints),
-  #                                        type="regular") %>%
-  #   sf::st_cast("POINT",warn=FALSE) %>% st_as_sf() %>%
-  #   dplyr::mutate(dist = st_distance(.,cut1.far),
-  #                 test = first(dist)>last(dist),
-  #                 pointID = ifelse(test,
-  #                                  1:dplyr::n(),
-  #                                  rev(1:dplyr::n()))) %>%
-  #   select(-test,-dist)
-  #
-  # sampledPoints_rs <- sf::st_line_sample(rightSide %>% st_union() %>%
-  #                                          sf::st_cast("LINESTRING",
-  #                                                      warn=FALSE),
-  #                                        n= nrow(sampledPoints),
-  #                                        type="regular") %>%
-  #   sf::st_cast("POINT",warn=FALSE) %>% st_as_sf() %>%
-  #   dplyr::mutate(dist = st_distance(.,cut1.far),
-  #                 test = first(dist)>last(dist),
-  #                 pointID = ifelse(test,
-  #                                  1:dplyr::n(),
-  #                                  rev(1:dplyr::n()))) %>%
-  #   select(-test,-dist)
   ##########
 
   ls0 = sf::st_nearest_points(leftSide,sampledPoints) %>%
@@ -306,13 +265,6 @@ generateCrossSections <- function(streamChannel,
                   Side = "ls") %>%
     sf::st_as_sf()
 
-  # ls1 <- lapply(X = 1:nrow(sampledPoints), FUN = function(i) {
-  #   pair <- rbind(sampledPoints, sampledPoints_ls) %>%
-  #     dplyr::filter(pointID == i) %>% st_combine()
-  #   line <- st_cast(pair, "LINESTRING") %>%
-  #     st_as_sf() %>% mutate(pointID = i)
-  #   return(line)
-  # }) %>% do.call("rbind", .)
 
 
   rs0 = sf::st_nearest_points(rightSide,sampledPoints) %>%
@@ -321,19 +273,17 @@ generateCrossSections <- function(streamChannel,
                   Side = "rs") %>%
     sf::st_as_sf()
 
-  # rs1 <- lapply(X = 1:nrow(sampledPoints), FUN = function(i) {
-  #   pair <- rbind(sampledPoints, sampledPoints_rs) %>%
-  #     dplyr::filter(pointID == i) %>% st_combine()
-  #   line <- st_cast(pair, "LINESTRING") %>%
-  #     st_as_sf() %>% mutate(pointID = i)
-  #   return(line)
-  #   }) %>% do.call("rbind", .)
 
   plotBbox.WGS <- sf::st_union(leftSide,rightSide) %>%
     sf::st_transform(crs=4326) %>%
     sf::st_bbox()
 
   if(getSatImage & ggmap::has_google_key()){
+    # if(is.null(googleZoom)){
+    #   targetLength = sf::st_length(streamChannel) %>% sum()
+    #   googleZoom = dplyr::case_when(##NEED TO TEST AND FILL THIS IN
+    # )
+    # }
     satImage <- ggmap::get_googlemap(center = c(mean(plotBbox.WGS[c(1,3)]),
                                                 mean(plotBbox.WGS[c(2,4)])),
                                      zoom = googleZoom,

@@ -9,7 +9,7 @@ buildXSectionPlot(
   plotFileName = "test.png",
   returnData = TRUE,
   verticalCutoff = 4,
-  streamChannelFile = "GeoData/STREAM CHANNELS.shp",
+  streamDir = NULL,
   ...
 )
 }

@@ -7,10 +7,10 @@
 addProcessSpace(transectObject)
 }
 \arguments{
-\item{transectObject}{}
+\item{transectObject}{Object created by the \code{generateCrossSections} function}
 }
 \value{
-
+transectObject that can be passed on to other functions or passed to exportSpatials
 }
 \description{
 addProcessSpace

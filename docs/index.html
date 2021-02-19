@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.032</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.033</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">'adamkc/ProcessSpace'</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ProcessSpace</span>)</pre></div>
-<p>This package requires a few spatial packages that themselves have many requirements. This installation process doesn’t always go smoothly/perfectly. It may try to update 30-50 packages and throw an error along the way.. <em><code>ProcessSpace</code></em> requires the following packages (with versions updated since 2020, roughly.) If you hit issues, consider just installing these packages first, slowly, one at a time, and then retrying installing <code>ProcessSpace</code>.</p>
+<p>This package requires a few spatial packages that themselves have many requirements. This installation process doesn’t always go smoothly/perfectly. It may try to update 30-50 packages and throw an error along the way.. <strong><code>ProcessSpace</code></strong> requires the following packages (with versions updated since 2020, roughly.) If you hit issues, consider just installing these packages first, slowly, one at a time, and then retrying installing <code>ProcessSpace</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="r">  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"dplyr"</span>)
   <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"tidyr"</span>)
   <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"purrr"</span>)
@@ -151,24 +151,25 @@
 <a href="#example-code" class="anchor"></a>Example Code:</h3>
 <p>The example below will produce a KMZ file to load into Google Earth.</p>
 <div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ProcessSpace</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggmap</span>) <span class="co"># necessary to load credentials.</span>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggmap</span>) <span class="co"># necessary to load google credentials for sat imagery. Not required.</span>
 
-<span class="no">rasterDir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/raster.tif"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
-<span class="no">streamsDir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/streams.shp"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
-<span class="no">streams</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">streamsDir</span>)
+<span class="co">#Filepath to raster DEM (change to your own file):</span>
+<span class="no">rasterLocation</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/raster.tif"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
+<span class="co">#Filepath to stream shapefile (change to your own file):</span>
+<span class="no">streamLocation</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/streams.shp"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"ProcessSpace"</span>)
+<span class="no">streams</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">streamLocation</span>)
+<span class="co">#Pick a target stream for analysis: (`LINKNO` is the FID in this shapefile)</span>
 <span class="no">targetStream</span> <span class="kw">&lt;-</span> <span class="no">streams</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">LINKNO</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">12</span>,<span class="fl">20</span>))
 
 
 <span class="no">targetStream</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="reference/generateCrossSections.html">generateCrossSections</a></span>(<span class="kw">xSectionDensity</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">100</span>,<span class="st">"m"</span>),
-                        <span class="kw">googleZoom</span><span class="kw">=</span><span class="fl">16</span>,
-                        <span class="kw">xSectionLength</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">100</span>,<span class="st">"m"</span>),
-                        <span class="kw">cut1Dir</span> <span class="kw">=</span> <span class="st">"W"</span>,
-                        <span class="kw">cut2Dir</span> <span class="kw">=</span> <span class="st">"E"</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="reference/generateCrossSections.html">generateCrossSections</a></span>(<span class="kw">xSectionDensity</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">100</span>,<span class="st">"m"</span>), <span class="co"># How often cross sections are taken.</span>
+                        <span class="kw">googleZoom</span><span class="kw">=</span><span class="fl">16</span>,                              <span class="co"># Pick appropiate Google zoom level.</span>
+                        <span class="kw">xSectionLength</span> <span class="kw">=</span> <span class="kw pkg">units</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/as_units.html">as_units</a></span>(<span class="fl">100</span>,<span class="st">"m"</span>),  <span class="co"># How far from channel to extend cross sections.</span>
+                        <span class="kw">cut1Dir</span> <span class="kw">=</span> <span class="st">"W"</span>) <span class="kw">%&gt;%</span>                          <span class="co"># cut1Dir: cardinal direction of upstream point of targetstream</span>
   <span class="fu"><a href="reference/allAtOnce.html">allAtOnce</a></span>(<span class="kw">outputFilename</span> <span class="kw">=</span> <span class="st">"exampleOutput.pdf"</span>,
-            <span class="kw">rasterDir</span> <span class="kw">=</span> <span class="no">rasterDir</span>,
-            <span class="kw">verticalCutoff</span><span class="kw">=</span><span class="fl">8</span>,
-            <span class="kw">streamChannelFile</span> <span class="kw">=</span> <span class="no">streamsDir</span>,
+            <span class="kw">rasterDir</span> <span class="kw">=</span> <span class="no">rasterLocation</span>,
+            <span class="kw">streamDir</span> <span class="kw">=</span> <span class="no">streamLocation</span>,
             <span class="kw">returnObject</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
             <span class="kw">doExportSpatial</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
 <p><img src="images/ExampleOutput.png" alt="Example image from Google Earth"></p>

@@ -7,9 +7,9 @@
 longitudinalElevation(
   transectObject,
   rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
-  makePlot = TRUE,
+  returnPlots = TRUE,
   returnData = TRUE,
-  plotFileName = "longPlot.png"
+  plotFileName = "longitudinalPlot.png"
 )
 }
 \arguments{

@@ -10,18 +10,39 @@ generateCrossSections(
   googleZoom = 14,
   cut1Dir = "W",
   cut2Dir = "E",
-  xSectionLength = 100,
+  xSectionLength = units::as_units(100, "m"),
   xSectionDensity = units::as_units(100, "m")
 )
 }
 \arguments{
-\item{xSectionDensity}{}
+\item{streamChannel}{The target stream reach. This should be a single
+contiguous streamline. No forking or gaps.}
+
+\item{getSatImage}{Logical (\strong{TRUE}). This determines whether to download
+satellite imagery. It requires a Google Authentication Key. See
+\code{ggmap::register_google()} to set up satellite imagery.}
+
+\item{googleZoom}{Zoom level of satellite imagery. 15-17 typically work.}
+
+\item{cut1Dir}{Important! Set this to the cardinal direction ("W","N","E","S")
+of the upstream end of the target streamline.}
+
+\item{cut2Dir}{Depreciated. No longer used.}
+
+\item{xSectionLength}{Length of cross sections away from the channel. Consider
+using \code{units::as_units(100,"m")} format.}
+
+\item{xSectionDensity}{Gap space between cross sections.Consider
+using \code{units::as_units(20,"m")} format.}
 }
 \value{
-
+transectObject.  This object will be passed onto additional function
+ in `ProcessSpace`. Initially it is returned with just, streamline, boundary
+  of transects, transect lines, a bounding box, the retreived google or
+  Stamen map, and the points where the cross sections cross the streamline.
 }
 \description{
-Generate Stream Cross Sections
+
 }
 \examples{
 

@@ -4,10 +4,12 @@
 \alias{mapPlotter}
 \title{mapPlotter}
 \usage{
-mapPlotter(transectObject, returnData = TRUE, streamChannelFile, ...)
+mapPlotter(transectObject, returnData = TRUE, streamDir = NULL, ...)
 }
 \arguments{
-\item{returnData}{}
+\item{streamDir}{File location of stream channels}
+
+\item{...}{}
 }
 \value{
 

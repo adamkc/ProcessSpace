@@ -8,7 +8,7 @@ allAtOnce(
   transectObject,
   outputFilename,
   detrendElevs = TRUE,
-  returnObject = FALSE,
+  returnObject = TRUE,
   doExportSpatial = FALSE,
   ...
 )
@@ -16,10 +16,25 @@ allAtOnce(
 \arguments{
 \item{transectObject}{Object created by the \code{generateCrossSections} function}
 
-\item{doExportSpatial}{}
+\item{outputFilename}{This is the name of the pdf file that is generated as
+well as the KMZ if spatial files are exported.}
+
+\item{detrendElevs}{Logical (\strong{TRUE}). Calculated a detrended raster file.
+Can be computationally expensive, especially with long target stream lengths.}
+
+\item{returnObject}{Logical (\strong{FALSE}). Whether or not to return an R object
+for additional analysis. If FALSE, NULL is returned.}
+
+\item{doExportSpatial}{Logical (\strong{FALSE}). Whether or not to generate KML
+exports. If both this and \code{returnObject} are FALSE, a pdf map and cross
+section plot are exported and nothing else.}
+
+\item{...}{Additonal arguments to be passed to \code{addTopoLines},
+\code{addCrossSectionElevations}, \code{buildXSectionPlot}, or
+\code{rasterPlotter}.}
 }
 \value{
-
+Either a transectObject or NULL
 }
 \description{
 allAtOnce

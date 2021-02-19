@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.032</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.033</span>
       </span>
     </div>
 
@@ -134,9 +134,9 @@
 
     <pre class="usage"><span class='fu'>addStreamChannels</span>(
   <span class='no'>transectObject</span>,
-  <span class='kw'>sampleDensity</span> <span class='kw'>=</span> <span class='kw pkg'>units</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/units/man/as_units.html'>as_units</a></span>(<span class='fl'>3</span>, <span class='st'>"m"</span>),
+  <span class='kw'>sampleDensity</span> <span class='kw'>=</span> <span class='kw pkg'>units</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/units/man/as_units.html'>as_units</a></span>(<span class='fl'>6</span>, <span class='st'>"m"</span>),
   <span class='kw'>rasterDir</span> <span class='kw'>=</span> <span class='st'>"GeoData/Raster/ChildsDEM_m.tif"</span>,
-  <span class='kw'>streamChannelFile</span> <span class='kw'>=</span> <span class='st'>"GeoData/STREAM CHANNELS.shp"</span>,
+  <span class='kw'>streamDir</span> <span class='kw'>=</span> <span class='st'>"GeoData/STREAM CHANNELS.shp"</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -144,8 +144,16 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>transectObject</th>
+      <td><p>Object created by the <code>generateCrossSections</code> function</p></td>
+    </tr>
+    <tr>
+      <th>sampleDensity</th>
+      <td><p>The precision of the</p></td>
+    </tr>
+    <tr>
       <th>rasterDir</th>
-      <td></td>
+      <td><p>The file location of the DEM file.</p></td>
     </tr>
     </table>
 

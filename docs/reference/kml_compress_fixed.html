@@ -75,7 +75,7 @@ but fixes a bug with including files" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ProcessSpace</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.032</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.033</span>
       </span>
     </div>
 
@@ -137,19 +137,13 @@ but fixes a bug with including files</h1>
 but fixes a bug with including files</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kml_compress_fixed</span>(
-  <span class='no'>file.name</span>,
-  <span class='kw'>zip</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv</a></span>(<span class='st'>"R_ZIPCMD"</span>, <span class='st'>"zip"</span>),
-  <span class='kw'>files</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>kml_compress_fixed</span>(<span class='no'>file.name</span>, <span class='kw'>files</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>removeTemps</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
+      <th>removeTemps</th>
       <td></td>
     </tr>
     </table>
