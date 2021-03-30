@@ -95,10 +95,21 @@ buildXSectionPlot <- function(transectObject,
 
   plotToSave <-  cowplot::plot_grid(transectObject$mapPlot, transectPlot)
 
+  checkOpen <- try(ggplot2::ggsave(plot = plotToSave,filename = plotFileName,
+                             height=10,width=20,dpi=300))
+  try(
+    if(grepl(pattern = "cannot open file",checkOpen)){
+      message("PDF open so cannot save,\n Renaming output with date and trying again");
+      newName <- paste0(tools::file_path_sans_ext(plotFileName),
+                        format(Sys.time(), "_%Y%m%d_%H%M%S"),
+                        ".pdf")
+      ggsave(plot = plotToSave,filename = newName,
+             height=10,width=20,dpi=300)
+    },
+    silent=TRUE
+  )
 
 
-  ggplot2::ggsave(plot = plotToSave,filename = plotFileName,
-                  height=10,width=20,dpi=300)
   if(returnData) return(transectObject)
 }
 

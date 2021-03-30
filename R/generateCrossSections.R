@@ -132,6 +132,8 @@ generateCrossSections <- function(streamChannel,
                        dplyr::last(distance),
                      meanDist = as.numeric(mean(distance)),.groups="drop") %>%
     data.frame() %>% dplyr::select(L1,doReverse,meanDist)
+  #In extra curvy streams with small segments, some segments gets reversed wrong:
+  temp$doReverse <- median(temp$doReverse) %>% as.logical()
 
   streamChannel.union <-streamChannel %>%
     sf::st_coordinates() %>%
@@ -165,6 +167,7 @@ generateCrossSections <- function(streamChannel,
   #           both operands of the expression should be "units" objects
   ## Not sure what the fix is. So xSectionLength is measured in the units of the CRS
   ## of othe streamChannel.union object.
+
   buff1 <- sf::st_buffer(streamChannel.union,
                          dist = as.numeric(xSectionLength),
                          nQuadSegs = 100,
@@ -182,7 +185,6 @@ generateCrossSections <- function(streamChannel,
                          dist = as.numeric(-xSectionLength),
                          nQuadSegs = 100,
                          singleSide=TRUE)%>%
-
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_line_merge() %>%
     sf::st_difference(y=sf::st_buffer(streamChannel.union,
@@ -192,17 +194,21 @@ generateCrossSections <- function(streamChannel,
     sf::st_transform(crs=sf::st_crs(streamChannel)) %>%
     smoothr::smooth("ksmooth",smoothness=20) #One of two calls to smoothr. Maybe seek alternatives?
 
-  buff1_small <-  sf::st_difference(buff1,
-                              y=sf::st_buffer(buff2,
-                                              dist = as.numeric(xSectionLength*1.4),
-                                              nQuadSegs = 100))
-  buff2_small <-  sf::st_difference(buff2,
-                              y=sf::st_buffer(buff1,
-                                              dist = as.numeric(xSectionLength*1.4),
-                                              nQuadSegs = 100))
-
-  buff1 <- buff1_small
-  buff2 <- buff2_small
+  ##I think the following *_small code was added to clean up the ends.
+  ## But it introduced an error, causing some boundaries to be clipped in the middle.
+  ## Commenting out for now.
+  #
+  # buff1_small <-  sf::st_difference(buff1,
+  #                             y=sf::st_buffer(buff2,
+  #                                             dist = as.numeric(xSectionLength*1.1),
+  #                                             nQuadSegs = 100))
+  # buff2_small <-  sf::st_difference(buff2,
+  #                             y=sf::st_buffer(buff1,
+  #                                             dist = as.numeric(xSectionLength*1.1),
+  #                                             nQuadSegs = 100))
+  #
+  # buff1 <- buff1_small
+  # buff2 <- buff2_small
 
   buff1.center <- sf::st_centroid(buff1) %>% sf::st_coordinates()
   buff2.center <- sf::st_centroid(buff2) %>% sf::st_coordinates()

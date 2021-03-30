@@ -17,7 +17,10 @@
 #'  section plot are exported and nothing else.
 #' @param ... Additonal arguments to be passed to \code{addTopoLines},
 #'   \code{addCrossSectionElevations}, \code{buildXSectionPlot}, or
-#'   \code{rasterPlotter}.
+#'   \code{rasterPlotter}. You will likely need to pass a directory path to the
+#'   raster (\strong{rasterDir}) as well as a path to the streams shapefile
+#'   (\strong{streamsDir}).
+#' @param rasterPaletteLims Argument passed to exportSpatials to help color raster output
 #'
 #' @return Either a transectObject or NULL
 #' @export
@@ -29,6 +32,7 @@ allAtOnce <- function(transectObject,
                       detrendElevs=TRUE,
                       returnObject=TRUE,
                       doExportSpatial=FALSE,
+                      rasterPaletteLims = c(-2,2),
                       ...){
 
   pdfName <- paste0(tools::file_path_sans_ext(outputFilename),".pdf")
@@ -48,7 +52,11 @@ allAtOnce <- function(transectObject,
   )
   if(doExportSpatial)
     exportSpatials(transectObject,
-                   sectionName = tools::file_path_sans_ext(outputFilename))
+                   sectionName = tools::file_path_sans_ext(outputFilename),
+                   rasterPaletteLims = rasterPaletteLims)
+  ##Ideally we can pass arguments to exportSpatials using ... but we need to parse
+  ## which arguments passed to ... go to which functions.  I think rasterDir and streamDir should
+  ## be arguments for allAtOnce. But for now I'll just add rasterPaletteLims.
 
   if(returnObject){
     return(transectObject)}
