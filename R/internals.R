@@ -58,18 +58,22 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
   insetPlotter <- function(i){
     ggplot2::ggplot() +
       ggplot2::geom_sf(data=transectObject$mainLine,
-              col="blue2") +
+                       col="blue2") +
       ggplot2::geom_sf(data=transectObject$sampledPoints,
-              col="black",size=0.6) +
+                       col="black",size=0.6) +
+      ggplot2::geom_sf(data=transectObject$ProcessPolygons_2ft%>%
+                         sf::st_union() %>%
+                         sf::st_as_sf(),
+                       fill="green",col=NA,alpha=.2) +
       ggplot2::geom_sf(data=transectObject$sampledPoints %>%
-                dplyr::filter(pointID==i),
-              col="red2",size=1.5) +
+                         dplyr::filter(pointID==i),
+                       col="red2",size=1.5) +
       ggplot2::geom_sf(data=transectObject$ls0 %>%
-                dplyr::filter(pointID==i),
-              col="green2") +
+                         dplyr::filter(pointID==i),
+                       col="green2") +
       ggplot2::geom_sf(data=transectObject$rs0 %>%
-                dplyr::filter(pointID==i),
-              col="green2") +
+                         dplyr::filter(pointID==i),
+                       col="green2") +
       cowplot::theme_nothing() +
       ggplot2::theme(panel.border = ggplot2::element_rect(fill = NA)) +
       ggplot2::coord_sf()

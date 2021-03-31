@@ -174,11 +174,11 @@ generateCrossSections <- function(streamChannel,
                          singleSide=TRUE) %>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_difference(y=sf::st_buffer(streamChannel.union,
-                                      dist = as.numeric(xSectionLength*0.98),
+                                      dist = as.numeric(xSectionLength*0.99),
                                       nQuadSegs = 100)) %>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_transform(crs=sf::st_crs(streamChannel))%>%
-    smoothr::smooth("ksmooth",smoothness=20)   #One of two calls to smoothr. Maybe seek alternatives?
+    smoothr::smooth("ksmooth",smoothness=100)   #One of two calls to smoothr. Maybe seek alternatives?
 
 
   buff2 <- sf::st_buffer(streamChannel.union,
@@ -188,27 +188,28 @@ generateCrossSections <- function(streamChannel,
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_line_merge() %>%
     sf::st_difference(y=sf::st_buffer(streamChannel.union,
-                                      dist = as.numeric(xSectionLength*0.98),
+                                      dist = as.numeric(xSectionLength*0.99),
                                       nQuadSegs = 100))%>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_transform(crs=sf::st_crs(streamChannel)) %>%
-    smoothr::smooth("ksmooth",smoothness=20) #One of two calls to smoothr. Maybe seek alternatives?
+    smoothr::smooth("ksmooth",smoothness=100) #One of two calls to smoothr. Maybe seek alternatives?
 
-  ##I think the following *_small code was added to clean up the ends.
+  ##I think the following *_small code was added to catch singleSide going wrong way.
+  ## seems to be fixed by increasing dist multiplier to .9999
   ## But it introduced an error, causing some boundaries to be clipped in the middle.
   ## Commenting out for now.
-  #
-  # buff1_small <-  sf::st_difference(buff1,
-  #                             y=sf::st_buffer(buff2,
-  #                                             dist = as.numeric(xSectionLength*1.1),
-  #                                             nQuadSegs = 100))
-  # buff2_small <-  sf::st_difference(buff2,
-  #                             y=sf::st_buffer(buff1,
-  #                                             dist = as.numeric(xSectionLength*1.1),
-  #                                             nQuadSegs = 100))
-  #
-  # buff1 <- buff1_small
-  # buff2 <- buff2_small
+#
+#   buff1_small <-  sf::st_difference(buff1,
+#                               y=sf::st_buffer(buff2,
+#                                               dist = as.numeric(xSectionLength*1.1),
+#                                               nQuadSegs = 100))
+#   buff2_small <-  sf::st_difference(buff2,
+#                               y=sf::st_buffer(buff1,
+#                                               dist = as.numeric(xSectionLength*1.1),
+#                                               nQuadSegs = 100))
+#
+#   buff1 <- buff1_small
+#   buff2 <- buff2_small
 
   buff1.center <- sf::st_centroid(buff1) %>% sf::st_coordinates()
   buff2.center <- sf::st_centroid(buff2) %>% sf::st_coordinates()
