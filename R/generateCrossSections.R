@@ -131,7 +131,8 @@ generateCrossSections <- function(streamChannel,
     dplyr::summarize(doReverse = dplyr::first(distance)>
                        dplyr::last(distance),
                      meanDist = as.numeric(mean(distance)),.groups="drop") %>%
-    data.frame() %>% dplyr::select(L1,doReverse,meanDist)
+    data.frame() %>%
+    dplyr::select(L1,doReverse,meanDist)
   #In extra curvy streams with small segments, some segments gets reversed wrong:
   temp$doReverse <- median(temp$doReverse) %>% as.logical()
 
@@ -178,7 +179,7 @@ generateCrossSections <- function(streamChannel,
                                       nQuadSegs = 100)) %>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_transform(crs=sf::st_crs(streamChannel))%>%
-    smoothr::smooth("ksmooth",smoothness=100)   #One of two calls to smoothr. Maybe seek alternatives?
+    smoothr::smooth("ksmooth",smoothness=10)   #One of two calls to smoothr. Maybe seek alternatives?
 
 
   buff2 <- sf::st_buffer(streamChannel.union,
@@ -192,7 +193,7 @@ generateCrossSections <- function(streamChannel,
                                       nQuadSegs = 100))%>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_transform(crs=sf::st_crs(streamChannel)) %>%
-    smoothr::smooth("ksmooth",smoothness=100) #One of two calls to smoothr. Maybe seek alternatives?
+    smoothr::smooth("ksmooth",smoothness=10) #One of two calls to smoothr. Maybe seek alternatives?
 
   ##I think the following *_small code was added to catch singleSide going wrong way.
   ## seems to be fixed by increasing dist multiplier to .9999
