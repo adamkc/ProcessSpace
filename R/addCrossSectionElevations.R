@@ -47,11 +47,15 @@ addCrossSectionElevations <- function(transectObject,
                                                    sf::st_as_sf() %>%
                                                    sf::st_cast("POINT") %>%
                                                    sf::st_transform(raster::crs(r)))
+  ##TODO: add error check. This grepl and gsub seems brittle
+  crssplit <- as.character(raster::crs(r)) %>% strsplit("\\s+") %>% unlist()
+  unitsOfRaster <- crssplit[grepl(x = crssplit,pattern = "+units=")] %>% gsub(pattern="\\+units=",replacement = "")
 
+  if(!unitsOfRaster %in% c("m","ft")) unitsOfRaster <- "m"
   ls0_points <- transectObject$ls0 %>%
     sf::st_transform(raster::crs(r)) %>%
-    #sf::st_line_sample(density = units::as_units(0.25,"m")) %>% #1pts/meter
-    sf::st_line_sample(sample = seq(from=1,to = 0,length.out=300)) %>%
+    sf::st_line_sample(density = units::as_units(res(r)[1],unitsOfRaster)) %>% #1pts/meter
+    #sf::st_line_sample(sample = seq(from=1,to = 0,length.out=300)) %>%
     sf::st_sf() %>%
     dplyr::mutate(Transect =transectObject$sampledPoints$pointID,
                   Side = "ls",
@@ -63,8 +67,8 @@ addCrossSectionElevations <- function(transectObject,
 
   rs0_points <- transectObject$rs0 %>%
     sf::st_transform(raster::crs(r)) %>%
-    #sf::st_line_sample(density = units::as_units(0.25,"m")) %>% #1pts/meter
-    sf::st_line_sample(sample = seq(from=1,to = 0,length.out=300)) %>%
+    sf::st_line_sample(density = units::as_units(res(r)[1],unitsOfRaster)) %>% #1pts/meter
+    #sf::st_line_sample(sample = seq(from=1,to = 0,length.out=300)) %>%
     sf::st_sf() %>%
     dplyr::mutate(Transect =transectObject$sampledPoints$pointID,
                   Side = "rs",

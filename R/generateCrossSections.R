@@ -179,7 +179,7 @@ generateCrossSections <- function(streamChannel,
                                       nQuadSegs = 100)) %>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_transform(crs=sf::st_crs(streamChannel))%>%
-    smoothr::smooth("ksmooth",smoothness=10)   #One of two calls to smoothr. Maybe seek alternatives?
+    smoothr::smooth("ksmooth",smoothness=25)   #One of two calls to smoothr. Maybe seek alternatives?
 
 
   buff2 <- sf::st_buffer(streamChannel.union,
@@ -193,7 +193,7 @@ generateCrossSections <- function(streamChannel,
                                       nQuadSegs = 100))%>%
     sf::st_cast("MULTILINESTRING",warn=FALSE) %>%
     sf::st_transform(crs=sf::st_crs(streamChannel)) %>%
-    smoothr::smooth("ksmooth",smoothness=10) #One of two calls to smoothr. Maybe seek alternatives?
+    smoothr::smooth("ksmooth",smoothness=25) #One of two calls to smoothr. Maybe seek alternatives?
 
   ##I think the following *_small code was added to catch singleSide going wrong way.
   ## seems to be fixed by increasing dist multiplier to .9999

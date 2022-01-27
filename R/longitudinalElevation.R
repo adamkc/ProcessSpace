@@ -64,18 +64,20 @@ longitudinalElevation <- function(transectObject,
       breaks = (max(longitudinalPlotData$cumulativeLength)/5) %>%
         round(-1)*c(0:5)
 
-      cumPlot1 <- ggplot2::ggplot(longitudinalPlotData,
+      longProGraph1 <- ggplot2::ggplot(longitudinalPlotData,
                                   ggplot2::aes(x=cumulativeLength,y=El)) +
         ggplot2::geom_line(size=1,show.legend=FALSE)  +
         ggplot2::scale_color_gradient(low = "blue",high="green") +
         ggplot2::ylab("Elevation (m)") +
+        ggplot2::xlab("Distance From Top (m)") +
         ggplot2::scale_x_continuous(breaks = breaks)  +
-        ggplot2::ggtitle("Longitudinal Profile") +
+        #ggplot2::ggtitle("Longitudinal Profile") +
         ggplot2::theme_bw()+
-        ggplot2::theme(axis.title.x = ggplot2::element_blank())
+        ggplot2::theme(#axis.title.x = ggplot2::element_blank(),
+                       text=ggplot2::element_text(size=20))
 
       segmentLength = round(max(longitudinalPlotData$cumulativeLength)/40, -1)
-      cumPlot2 <- longitudinalPlotData %>%
+      longProGraph2 <- longitudinalPlotData %>%
         dplyr::mutate(cumulativeLengthSegment = cumulativeLength +
                         (segmentLength - cumulativeLength %% segmentLength),
                       pixelSlope = El-dplyr::lag(El)) %>%
@@ -93,13 +95,14 @@ longitudinalElevation <- function(transectObject,
         ggplot2::ylab("Percent Slope") +
         ggplot2::xlab("Cumulative Length (m)") +
         ggplot2::geom_text(label=sprintf("Segment Length: %s m",segmentLength),
-                           x=0,y=0,hjust=-0,size=3) +
+                           x=0,y=0.5,hjust=-0,size=3) +
         ggplot2::scale_x_continuous(breaks=breaks) +
         #scale_y_continuous(breaks = c(0,-2,-4,-6),
         #minor_breaks = c(-1,-3,-5))+
-        ggplot2::theme_bw()#;cumPlot2
-      transectObject$longProGraph1 <- cumPlot1
-      transectObject$longProGraph2 <- cumPlot2
+        ggplot2::theme_bw() +
+        theme(text=ggplot2::element_text(size=16))#;longProGraph2
+      transectObject$longProGraph1 <- longProGraph1
+      transectObject$longProGraph2 <- longProGraph2
     }
 
     if(returnData == TRUE){

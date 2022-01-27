@@ -147,15 +147,16 @@ exportSpatials(transectObject,sectionName = "exampleOutput")
 
 ### Here's what the detrended raster and a single cross section plot can look like:
 
-Regions of the map with lower elevations than the stream are green, regions
+In the KMZ, regions of the map with lower elevations than the stream are green, regions
 similar in elevation to the stream are blue, and regions higher than the stream
-elevation go from red to tan.
+elevation go from red to tan. Here, the raster is plotted with a default palette.
 
 ```{r}
 
-legend <- magick::image_read("exampleOutput_El_legend.png")
-detrend <- magick::image_read("exampleOutput_El.png")
-magick::image_mosaic(c(magick::image_background(detrend,"grey"),legend))
+# legend <- magick::image_read("exampleOutput_El_legend.png")
+# detrend <- magick::image_read("exampleOutput_El.png")
+# magick::image_mosaic(c(magick::image_background(detrend,"grey"),legend))
+plot(transectObject$detrendedRaster)
 
 ```
 
@@ -173,3 +174,37 @@ direction from the stream path. Perhaps this is not a natural flow path?
 plot(magick::image_read("exampleOutput-Images/Transect_5_temp_.png"))
 
 ```
+
+You can save the detrended raster file to load into other software like ArcMap.
+
+```{r}
+transectObject$detrendedRaster %>% raster::raster() %>%  raster::writeRaster("DetrendedRaster.tif")
+```
+
+
+You can also animate the cross sections into a not super informative but fun .gif file..
+
+```{r}
+library(magick)
+dir_out <- "vignettes/exampleOutput-Images"
+imgs <- list.files(dir_out, full.names = TRUE)
+num <- imgs %>%  data.frame(file=.) %>%
+  tidyr::separate(col=file,into=c(NA,"transect",NA,NA),sep="_")%>%
+  .[,1] %>% as.numeric()
+imgs <- imgs[order(num)]
+img_list <- lapply(imgs, image_read)
+
+## join the images together
+img_joined <- image_join(img_list)
+
+## animate at 25 frames per second
+img_animated <- image_animate(img_joined, fps = 4)
+
+## view animated image
+img_animated
+
+## save to disk
+image_write(image = img_animated,
+            path = "vignettes/gif.gif")
+```
+
