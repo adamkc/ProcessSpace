@@ -227,8 +227,13 @@ concavemanWrapper <- function(multilinestring){
 
 
   #Drop the single feature "polygon":
-  set1.polys <- dplyr::filter(set1.polys, sf::st_is_valid(set1.polys))
-  set2.polys <- dplyr::filter(set2.polys, sf::st_is_valid(set2.polys))
+  #Error with updated sf package. These lines cause fatal crash.
+  #Fix is to just check that areas are greater than zero.
+  # set1.polys <- dplyr::filter(set1.polys, sf::st_is_valid(set1.polys))
+  # set2.polys <- dplyr::filter(set2.polys, sf::st_is_valid(set2.polys))
+
+  set1.polys <- dplyr::filter(set1.polys, as.numeric(Area_m2)>0)
+  set2.polys <- dplyr::filter(set2.polys, as.numeric(Area_m2)>0)
 
   #fullPolygon <- st_union(set1.polys,set2.polys) %>% st_union()
   fullPolygons <- rbind(set1.polys,set2.polys)
