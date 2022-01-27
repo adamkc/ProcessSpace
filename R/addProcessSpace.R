@@ -14,8 +14,7 @@ addProcessSpace <- function(transectObject){
     return(cat(crayon::red("\nNot generating Process Space Polygons: Xsection plot data missing. \nRun 'addCrossSectionElevations()' first. ")))
   }
 
-  BufferLengths <-
-    transectObject$XsectionElevations %>% data.frame() %>%
+  BufferLengths <- transectObject$XsectionElevations %>% data.frame() %>%
     dplyr::select(Transect,Side,metersLength,deltaElCat,Index) %>%
     dplyr::mutate(Transect=factor(Transect)) %>%
     dplyr::group_by(Transect,Side) %>%

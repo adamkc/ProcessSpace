@@ -119,13 +119,13 @@ The `ProcessSpace` package uses ten or so functions to work through the analysis
 
 ##Long and version:
 
-# transectObject <- transectObject %>%
-#   addTopoLines(rasterDir = rasterFilePath) %>%
-#   addStreamChannels(rasterDir = rasterFilePath,streamDir = streamShapefilePath) %>%
-#   addCrossSectionElevations(rasterDir = rasterFilePath) %>%
-#   addProcessSpace() %>%
-#   buildXSectionPlot(plotFileName = "exampleOutput.pdf",streamDir = streamShapefilePath) %>%
-#   rasterPlotter(rasterDir = rasterFilePath)
+transectObject <- transectObject %>%
+  addTopoLines(rasterDir = rasterFilePath) %>%
+  addStreamChannels(rasterDir = rasterFilePath,streamDir = streamShapefilePath) %>%
+  addCrossSectionElevations(rasterDir = rasterFilePath) %>%
+  addProcessSpace() %>%
+  buildXSectionPlot(plotFileName = "exampleOutput.pdf",streamDir = streamShapefilePath) %>%
+  rasterPlotter(rasterDir = rasterFilePath)
 
 ## Short and version:
 
