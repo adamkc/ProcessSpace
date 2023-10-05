@@ -41,6 +41,7 @@ allAtOnce <- function(transectObject,
     suppressMessages({
       transectObject <- addTopoLines(transectObject, ...)
       transectObject <- addCrossSectionElevations(transectObject, ...)
+      transectObject <- longitudinalElevation(transectObject,...)
       transectObject <- addProcessSpace(transectObject)
       transectObject <- buildXSectionPlot(transectObject,
                                           plotFileName = pdfName, ...)

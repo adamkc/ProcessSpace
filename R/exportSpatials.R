@@ -26,12 +26,30 @@ exportSpatials <- function(transectObject,
       cat("\n")
       #--
       if(!is.null(transectObject$mainLine))
-        transectObject$mainLine %>%
-        sf::st_cast("MULTILINESTRING") %>%
-        sf::st_line_merge() %>%
-        as("Spatial") %>%
-        plotKML::kml_layer(subfolder.name="mainLine",
-                           colour="blue",width=5)
+        if(addXSectionPlots & !is.null(transectObject$longProGraph1)){
+          bothplots <- cowplot::plot_grid(transectObject$longProGraph1,transectObject$longProGraph2,ncol=1)
+          dir <- paste0(sectionName,"-Images")
+          if(!dir.exists(dir)) dir.create(dir)
+          ggplot2::ggsave(plot = bothplots,filename = file.path(dir,"LongProfile.png"),height=4,width=6,dpi=150)
+          transectObject$mainLine %>%
+            sf::st_cast("MULTILINESTRING") %>%
+            sf::st_line_merge() %>%
+            as("Spatial") %>%
+            plotKML::kml_layer(subfolder.name="mainLine",
+                               colour="blue",
+                               width=5,
+                               html.table = paste0("<img style=\"max-width:900px;\" src=\"",
+                                                   sectionName,"-Images/LongProfile.png\">"))
+
+        } else{
+          transectObject$mainLine %>%
+            sf::st_cast("MULTILINESTRING") %>%
+            sf::st_line_merge() %>%
+            as("Spatial") %>%
+            plotKML::kml_layer(subfolder.name="mainLine",
+                               colour="blue",width=5)
+        }
+
       #--
       if(!is.null(transectObject$sampledPoints)){
         if(addXSectionPlots){

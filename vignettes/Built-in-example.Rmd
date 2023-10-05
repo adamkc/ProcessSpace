@@ -154,10 +154,6 @@ exportSpatials(transectObject,sectionName = "exampleOutput")
 In the KMZ, areas of the map that have lower elevations than the stream are colored green, areas that have similar elevations to the stream are colored blue, and areas that have higher elevations than the stream are colored from red to tan. The raster is displayed here is using a default palette that is different from the kmz. It is important to note that the detrended raster is based on the cross sections, so if there are relatively few cross sections generated, as seen in this example, the output raster will have edge artifacts. To obtain a smoother detrended raster, the code should be rerun with an increased density of cross sections, such as every 2 meters. This will result in a more accurate representation of the terrain.
 
 ```{r}
-
-# legend <- magick::image_read("exampleOutput_El_legend.png")
-# detrend <- magick::image_read("exampleOutput_El.png")
-# magick::image_mosaic(c(magick::image_background(detrend,"grey"),legend))
 plot(transectObject$detrendedRaster)
 
 ```

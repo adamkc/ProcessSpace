@@ -14,7 +14,8 @@ longitudinalElevation <- function(transectObject,
            rasterDir = "GeoData/Raster/ChildsDEM_m.tif",
            returnPlots=TRUE,
            returnData=TRUE,
-           plotFileName="longitudinalPlot.png"){
+           plotFileName="longitudinalPlot.png",
+           ...){
     cat(crayon::green("Generating Longitudinal Elevation\n"))
 
     r <- raster::raster(rasterDir)
@@ -74,7 +75,7 @@ longitudinalElevation <- function(transectObject,
         #ggplot2::ggtitle("Longitudinal Profile") +
         ggplot2::theme_bw()+
         ggplot2::theme(#axis.title.x = ggplot2::element_blank(),
-                       text=ggplot2::element_text(size=20))
+                       text=ggplot2::element_text(size=16))
 
       segmentLength = round(max(longitudinalPlotData$cumulativeLength)/40, -1)
       longProGraph2 <- longitudinalPlotData %>%
@@ -93,7 +94,7 @@ longitudinalElevation <- function(transectObject,
         ggplot2::geom_smooth() +
         ggplot2::scale_color_gradient(low = "blue",high="green") +
         ggplot2::ylab("Percent Slope") +
-        ggplot2::xlab("Cumulative Length (m)") +
+        ggplot2::xlab("Distance From Top (m)") +
         ggplot2::geom_text(label=sprintf("Segment Length: %s m",segmentLength),
                            x=0,y=0.5,hjust=-0,size=3) +
         ggplot2::scale_x_continuous(breaks=breaks) +
