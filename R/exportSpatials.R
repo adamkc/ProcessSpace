@@ -137,6 +137,8 @@ exportSpatials <- function(transectObject,
 
       if(!is.null(transectObject$detrendedRaster)){
         tempRaster <- raster::raster(transectObject$detrendedRaster)
+        raster::writeRaster(tempRaster,paste0(sectionName,"_DetrendedRaster.tif"))
+        tempRaster <- tempRaster %>% raster::mask(transectObject$streamBuffer)
         tempRaster[tempRaster < rasterPaletteLims[1]] <- rasterPaletteLims[1]
         tempRaster[tempRaster > rasterPaletteLims[2]] <- rasterPaletteLims[2]
         tempRaster[1:2,1] <- rasterPaletteLims
@@ -154,7 +156,8 @@ exportSpatials <- function(transectObject,
       files <- c(paste0(sectionName,"_temp_El.png"),
                  paste0(sectionName,"_temp_El_legend.png"),
                  paste0(sectionName,"-Images"),
-                 paste0(sectionName,"_temp_.kml"))
+                 paste0(sectionName,"_temp_.kml"),
+                 paste0(sectionName,"_DetrendedRaster.tif"))
       kml_compress_fixed(file.name=paste0(sectionName,"_temp_.kml"),
                          files = files)
     })

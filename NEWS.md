@@ -15,6 +15,12 @@
   * Remove need for low use packages: purrr, cowplot, smoothr, gstat, concaveman
   * Consider replacing raster package with stars package?
 
+## ProcessSpace 0.1.05
+
+* Fixed introduced error from sf update to st_distance
+* Many small tweaks and rewrite of article
+
+
 ## ProcessSpace 0.1.033
 
 * Added some documentation

@@ -126,7 +126,7 @@ generateCrossSections <- function(streamChannel,
                      Y = c(dplyr::first(Y),dplyr::last(Y)),
                      Place = c("first","last"),.groups="drop") %>%
     sf::st_as_sf(coords=c("X","Y"),crs=sf::st_crs(streamChannel)) %>%
-    dplyr::mutate(distance = sf::st_distance(.,cut1.far,by_element=TRUE)) %>%
+    dplyr::mutate(distance = sf::st_distance(.,cut1.far,by_element=FALSE)) %>%
     dplyr::group_by(L1) %>%
     dplyr::summarize(doReverse = dplyr::first(distance)>
                        dplyr::last(distance),
@@ -168,6 +168,9 @@ generateCrossSections <- function(streamChannel,
   #           both operands of the expression should be "units" objects
   ## Not sure what the fix is. So xSectionLength is measured in the units of the CRS
   ## of othe streamChannel.union object.
+  streamBuffer <- sf::st_buffer(streamChannel.union,
+                               dist = as.numeric(xSectionLength),
+                               nQuadSegs = 100)
 
   buff1 <- sf::st_buffer(streamChannel.union,
                          dist = as.numeric(xSectionLength),
@@ -309,6 +312,7 @@ generateCrossSections <- function(streamChannel,
   }
 
   output <- list(mainLine = streamChannel.union,
+                 streamBuffer = streamBuffer,
                  leftSide = leftSide,
                  rightSide = rightSide,
                  ls0 = ls0,

@@ -32,8 +32,7 @@ suppressPackageStartupMessages({
 
 ## Load the Data files and check them
 
-These are generic files that are provided with the `ProcessSpace` package. You'll
-need to supply your own raster DEM and streamline shapefile eventually.
+These files are generic and come with the `ProcessSpace` package. However, you will need to provide your own raster DEM and streamline shapefile at some point. It is important to note that these files are not specific to your project and may require customization to fit your needs. 
 
 ```{r}
 rasterFilePath <- system.file("external/raster.tif", package="ProcessSpace")
@@ -41,8 +40,7 @@ streamShapefilePath <- system.file("external/streams.shp", package="ProcessSpace
 streams <- sf::read_sf(streamShapefilePath)
 ```
 
-And now lets plot the raster hillshade. It takes a little time to calculate the hillshade
-values. This step isn't necessary for running the `ProcessSpace` tool.
+Now, let's plot the raster hillshade. This process may take some time to calculate the hillshade values. It is important to note that this step is not required for running the `ProcessSpace` tool. However, visualizing the hillshade can provide valuable insights into the terrain and help with further analysis.
 
 ```{r}
 r <- raster::raster(rasterFilePath)
@@ -62,15 +60,16 @@ rasterPlot <- h %>%
 rasterPlot
 ```
 
-Let's imagine we are interested in knowing more about stream segments *12* and *20*. It doesn't matter how we select these two segments as long as they're all we feed to the `*ProcessSpace*` functions. In this case, we'll use the `dplyr::filter` function to create a new object, selecting using the *LINKNO* field. But you could do a spatial filter or any number of other filter methods. Your streamfile may not have a LINKNO attribute, in which case you can use the unique identifier column for your particular dataset.
+Let's imagine that we want to gather more information about stream segments *12* and *20*. We can select these segments using any method as long as we only include them in the `*ProcessSpace*` functions. In this example, we will use the `dplyr::filter` function to create a new object based on the *LINKNO* field. However, you could also use a spatial filter or other filtering methods. If your streamfile does not have a LINKNO attribute, you can use the unique identifier column for your dataset.
 
-Let's pull those two aside and confirm we grabbed the right ones by plotting the results. We'll highlight the two segments we selected in blue. The `ProcessSpace` tool currently can't handle branching stream structures so we need to be careful here to only grab one flow path, without missing segments in the middle.
+After selecting the segments, we can plot the results and confirm that we have chosen the correct ones. We will highlight the selected segments in blue. It is important to note that the `ProcessSpace` tool cannot handle branching stream structures. Therefore, we need to ensure that we only select one flow path without missing any segments in the middle.
+
 
 ```{r,fig.height=2.5,fig.width=4}
 targetStream <- streams %>% dplyr::filter(LINKNO %in% c(12,20)) 
 #Check that you grabbed the right streams:
 ggplot(streams) + geom_sf() +
-  geom_sf(data=targetStream,col="blue4",size=3,alpha=.6) +
+  geom_sf(data=targetStream,col="blue4",linewidth=3,alpha=.6) +
   theme_nothing()
 
 ```
@@ -81,20 +80,22 @@ Great. We clearly grabbed the correct segments.
 
 ### First, generate the cross sections:
 
-This places evenly spaced points along the selected stream file at the interval
-selected. Then it draws semi-perpendicular cross sections at each point at for the length given. You need to indicate the general flow direction of the stream by indicating which direction the stream is flowing from, using the argument `cut1Dir`. For example, if the stream flows West to East provide "W", if it flows North to East provide "N". The cross sections are produced without access to a raster file, so the package cannot just look to determine flow direction.
+This function places evenly spaced points along a selected stream file at a specified interval and draws semi-perpendicular cross sections at each point for a given length. To indicate the flow direction of the stream, the argument `cut1Dir` should be used. For example, if the stream flows from West to East, input "W", and if it flows from North to East, input "N". 
 
-If you've linked the `ggmap` package to a Google Cloud Platform account, this function will return a satellite image of the location being analyzed. If you haven't linked an account, it will return a topographic map.
+The cross section lines are placed without using a raster file, so the package cannot determine the flow direction automatically. 
+
+Additionally, if the `ggmap` package is linked to a Google Cloud Platform account, the function will return a satellite image of the location being analyzed. If the package is not linked, a topographic map will be returned instead.
+
 
 ```{r}
 transectObject <- targetStream %>%
-  generateCrossSections(xSectionDensity = units::as_units(50,"m"),
+  generateCrossSections(xSectionDensity = units::as_units(10,"m"),
                         googleZoom=16,
                         xSectionLength = units::as_units(100,"m"),
                         cut1Dir = "W")
 ```
 
-We can peek into the `transectObject` that is returned by this function. It should be a list with 8 named entries (`mainLine`, `leftSide`, `rightSide`, `ls0`, `rs0`, `plotBbox`, `satImage`, and `sampledPoints`). We stop the process here with our generated cross sections to be used for another purpose. Or we can proceed to additional `*ProcessSpace*` functions.
+We can examine the `transectObject` that is returned by this function. It should be a list with eight named entries: `mainLine`, `leftSide`, `rightSide`, `ls0`, `rs0`, `plotBbox`, `satImage`, and `sampledPoints`. At this point, we can either stop the process and use the generated cross sections for another purpose, or we can continue with additional `*ProcessSpace*` functions. However, it's important to note that the cross sections haven't been used to extract elevations from the raster file yet, so they only represent the spatial locations of the cross sections to be sampled. If you want to extract elevations, you'll need to use additional functions.
 
 
 
@@ -113,19 +114,22 @@ transectObject$satImage %>% ggmap() +
 
 ### Second, run it through a series of manipulations:
 
-The `ProcessSpace` package uses ten or so functions to work through the analysis. They can be run one at a time, like in the commented code below. Or the function `allAtOnce` runs them ... all at once...
+The `ProcessSpace` package consists of approximately ten functions that are used to perform the analysis. These functions can be executed individually, as demonstrated in the commented code below. Alternatively, the `allAtOnce` function can be used to execute all of the functions together.
+
+It is important to note that the package's functions are designed to work seamlessly together, and executing them in the correct order is crucial to obtaining accurate results. Therefore, it is recommended to use the `allAtOnce` function to ensure that the analysis is performed correctly.
+
 
 ```{r}
 
 ##Long and version:
 
-transectObject <- transectObject %>%
-  addTopoLines(rasterDir = rasterFilePath) %>%
-  addStreamChannels(rasterDir = rasterFilePath,streamDir = streamShapefilePath) %>%
-  addCrossSectionElevations(rasterDir = rasterFilePath) %>%
-  addProcessSpace() %>%
-  buildXSectionPlot(plotFileName = "exampleOutput.pdf",streamDir = streamShapefilePath) %>%
-  rasterPlotter(rasterDir = rasterFilePath)
+# transectObject <- transectObject %>%
+#   addTopoLines(rasterDir = rasterFilePath) %>%
+#   addStreamChannels(rasterDir = rasterFilePath,streamDir = streamShapefilePath) %>%
+#   addCrossSectionElevations(rasterDir = rasterFilePath) %>%
+#   addProcessSpace() %>%
+#   buildXSectionPlot(plotFileName = "exampleOutput.pdf",streamDir = streamShapefilePath) %>%
+#   rasterPlotter(rasterDir = rasterFilePath)
 
 ## Short and version:
 
@@ -139,17 +143,15 @@ transectObject <- transectObject %>% allAtOnce(outputFilename = "exampleOutput.p
 
 ### Then export the results as a comprehensive KMZ file:
 
-This produces a KMZ file that contains the cross section plots imbedded.  Clicking the points along the stream file pull up the cross section plots. This can also be produced with the `allAtOnce` function by passing the `doExportSpatial = TRUE` argument. Producing the ggplot files for each transect can be time consuming (~1 second per plot).
+To create a comprehensive KMZ file, export the results including the cross section plots embedded within it. By clicking on the points along the stream file, the cross section plots can be accessed. This can also be done using the `allAtOnce` function with the `doExportSpatial = TRUE` argument. However, note that producing the ggplot files for each transect can be time-consuming, taking approximately 1 second per plot.
 
-```{r}
+```{r, message=FALSE,results='hide'}
 exportSpatials(transectObject,sectionName = "exampleOutput")
 ```
 
 ### Here's what the detrended raster and a single cross section plot can look like:
 
-In the KMZ, regions of the map with lower elevations than the stream are green, regions
-similar in elevation to the stream are blue, and regions higher than the stream
-elevation go from red to tan. Here, the raster is plotted with a default palette.
+In the KMZ, areas of the map that have lower elevations than the stream are colored green, areas that have similar elevations to the stream are colored blue, and areas that have higher elevations than the stream are colored from red to tan. The raster is displayed here is using a default palette that is different from the kmz. It is important to note that the detrended raster is based on the cross sections, so if there are relatively few cross sections generated, as seen in this example, the output raster will have edge artifacts. To obtain a smoother detrended raster, the code should be rerun with an increased density of cross sections, such as every 2 meters. This will result in a more accurate representation of the terrain.
 
 ```{r}
 
@@ -162,29 +164,27 @@ plot(transectObject$detrendedRaster)
 
 
 
-Cross section look like this. They are plotted as though you're looking upstream
-(which comes naturally when the raster and cross sections are viewed 3D in
-Google Earth.) The blue and green bands show elevations within 1ft and 2ft of
-the stream channel. This particular transect shows the stream is captured by a
-highly incised channel and the terrain slopes downhill in either perpendicular
-direction from the stream path. Perhaps this is not a natural flow path?
+Cross sections are visual representations of the stream channel and its surroundings, viewed as if you were looking upstream. The graph below shows a typical cross section, with elevations marked in blue and green bands that represent distances within 1ft and 2ft of the stream channel, respectively. By examining the cross section, we can see that the stream is flowing through a highly incised channel, which means that the channel is deeply cut into the surrounding terrain. The terrain slopes downhill in perpendicular directions from the stream path, indicating that the stream is flowing through a valley or canyon. 
+
+In this particular case, the stream flow is caused by a road capture event, which occurs when a road or other man-made structure diverts water from its natural path. In this case, the road has captured the flow of the stream, causing it to run along the top of a ridge. This can have significant impacts on the surrounding ecosystem, including changes to water quality, erosion, and habitat loss. Understanding the topography of the stream and its surroundings is crucial for managing these impacts and ensuring the health of the ecosystem.
+
 
 ```{r}
 
-plot(magick::image_read("exampleOutput-Images/Transect_5_temp_.png"))
+plot(magick::image_read("exampleOutput-Images/Transect_20_temp_.png"))
 
 ```
 
 You can save the detrended raster file to load into other software like ArcMap.
 
 ```{r}
-transectObject$detrendedRaster %>% raster::raster() %>%  raster::writeRaster("DetrendedRaster.tif")
+transectObject$detrendedRaster %>%
+  raster::raster() %>% 
+  raster::writeRaster("DetrendedRaster.tif", overwrite=TRUE)
 ```
 
-
-You can also animate the cross sections into a not super informative but fun .gif file..
-
-```{r}
+```{r,echo=FALSE,eval=FALSE}
+##Hidden code to generate the animaged gif:
 library(magick)
 dir_out <- "vignettes/exampleOutput-Images"
 imgs <- list.files(dir_out, full.names = TRUE)
@@ -205,6 +205,14 @@ img_animated
 
 ## save to disk
 image_write(image = img_animated,
-            path = "vignettes/gif.gif")
+            path = "vignettes/AnimatedCrosssections.gif")
+
 ```
 
+Here's another way to visualized the cross sections along the selected stream segment. An animated gif!
+
+```{r}
+gif <- magick::image_read("vignettes/AnimatedCrosssections.gif")
+gif
+
+```

@@ -82,8 +82,10 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
   plotter <- function(df,insetPlot=NULL){
     filename <- file.path(dir,paste0("Transect_",df$Transect[1],"_temp_.png"))
     minEl <- min(df$deltaEl)
+    maxEl <- max(df$deltaEl)
     minLen <- min(df$metersLength)
     maxLen  <- max(df$metersLength)
+    exaggeration <- as.integer((maxLen-minLen) / (maxEl - minEl))
 
     plot <- ggplot2::ggplot(df,ggplot2::aes(x=metersLength,y=deltaEl)) +
       ggplot2::annotate("rect", xmin = minLen, xmax = maxLen,
@@ -105,7 +107,8 @@ exportIndividualXSectionPlots <- function(transectObject,sectionName){
       ggplot2::theme_classic() +
       ggplot2::ylab("Elev. above channel (m)") +
       ggplot2::xlab("Distance off channel (m)") +
-      #ggplot2::ggtitle(paste0("Transect_",df$Transect[1])) +  ## Its in the filename..
+      ggplot2::ggtitle(paste0("Transect_",df$Transect[1]),
+                       sprintf("Horizontal exaggeration: %ix", exaggeration)) +  ## Its in the filename..
       ggplot2::geom_text(label="Channel",col="royalblue2",x=0,y=0,angle=90,
                          hjust=-.4,vjust=-.3,alpha=.5,size=4) +
       ggplot2::theme(text=ggplot2::element_text(size=12)) +

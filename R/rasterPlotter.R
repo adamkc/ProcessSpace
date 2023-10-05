@@ -28,10 +28,11 @@ rasterPlotter <- function(transectObject,
     sf::st_transform(raster::crs(r))
 
   bufferPoly <- sf::st_union(transectObject$leftSide,transectObject$rightSide) %>%
-    sf::st_transform(raster::crs(r)) %>%
+    sf::st_transform(raster::crs(r))
+  bufferPoly.ext <- bufferPoly %>%
     extent.sf()
 
-  r.clip <- raster::crop(x = r, y=bufferPoly)# %>%
+  r.clip <- raster::crop(x = r, y=bufferPoly.ext)
     #raster::projectRaster(crs = raster::crs(r))
 
   # r.clip.df <- r.clip %>% methods::as("SpatialPixelsDataFrame") %>%
@@ -85,7 +86,9 @@ rasterPlotter <- function(transectObject,
   names(x.interp.krige) <- c("DetrendedElevation","KrigeVar")
   #plot(x.interp.krige)
 
-  transectObject$detrendedRaster <- x.interp.krige
+  transectObject$detrendedRaster <- x.interp.krige #%>%
+    # raster::raster() %>%
+    # raster::mask(bufferPoly)
 
   outputTimer(startTime)
 
