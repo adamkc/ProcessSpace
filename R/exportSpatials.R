@@ -29,14 +29,14 @@ exportSpatials <- function(transectObject,
         transectObject$mainLine %>%
         sf::st_cast("MULTILINESTRING") %>%
         sf::st_line_merge() %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="mainLine",
                            colour="blue",width=5)
       #--
       if(!is.null(transectObject$sampledPoints)){
         if(addXSectionPlots){
           exportIndividualXSectionPlots(transectObject,sectionName)
-          temp <- transectObject$sampledPoints %>% sf::as_Spatial()
+          temp <- transectObject$sampledPoints %>% as("Spatial")
           plotKML::kml_layer(temp,
                              subfolder.name="sampledPoints",
                              points_names = temp$pointID,
@@ -46,7 +46,7 @@ exportSpatials <- function(transectObject,
                              colour="turquoise", size=0.5,
                              shape="http://maps.google.com/mapfiles/kml/pal2/icon18.png")
         } else{
-          temp <- transectObject$sampledPoints %>% sf::as_Spatial()
+          temp <- transectObject$sampledPoints %>% as("Spatial")
           plotKML::kml_layer(temp,subfolder.name="sampledPoints",
                              points_names = temp$pointID,
                              colour="turquoise", size=0.5,
@@ -60,7 +60,7 @@ exportSpatials <- function(transectObject,
         sf::st_cast("MULTILINESTRING") %>%
         sf::st_line_merge() %>%
         sf::st_as_sf() %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="leftSide",
                            colour="red4",alpha=.5,width=5)
       #--
@@ -69,21 +69,21 @@ exportSpatials <- function(transectObject,
         sf::st_cast("MULTILINESTRING") %>%
         sf::st_line_merge() %>%
         sf::st_as_sf() %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="rightSide",
                            colour="purple4",alpha=.5,width=5)
       #--
       if(!is.null(transectObject$ls0))
         transectObject$ls0 %>%
         sf::st_as_sf() %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="ls_transects",
                            colour="red",alpha=.3,width=3)
       #--
       if(!is.null(transectObject$rs0))
         transectObject$rs0 %>%
         sf::st_as_sf() %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="rs_transects",
                            colour="purple",alpha=.3,width=3)
       #--
@@ -93,7 +93,7 @@ exportSpatials <- function(transectObject,
         dplyr::mutate(Name = "ProcessPolygons_1ft",
                       Area_m2=Area_m2%>%round(2)) %>%
         dplyr::select(Name,Area_m2,pointID,Side) %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="ProcessPolygons_1ft",
                            colour="blue",fill="blue",alpha=.2,width=3,
                            balloon = TRUE)
@@ -104,7 +104,7 @@ exportSpatials <- function(transectObject,
         dplyr::mutate(Name = "ProcessPolygons_2ft",
                       Area_m2=Area_m2%>%round(2)) %>%
         dplyr::select(Name,Area_m2,pointID,Side) %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="ProcessPolygons_2ft",
                            colour="green",alpha=.2,width=3,
                            balloon = TRUE)
@@ -116,7 +116,7 @@ exportSpatials <- function(transectObject,
         dplyr::mutate(Name = "ProcessPolygons_1ft_Merged",
                       Area_m2=sf::st_area(.,)%>%round(2),
                       Area_acres=(Area_m2/4047)%>%round(2)) %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="ProcessPolygons_1ft_Merged",
                            colour="blue",fill="blue",alpha=.2,width=3,
                            balloon = TRUE)
@@ -128,7 +128,7 @@ exportSpatials <- function(transectObject,
         dplyr::mutate(Name = "ProcessPolygons_2ft_Merged",
                       Area_m2=sf::st_area(.,)%>%round(2),
                       Area_acres=(Area_m2/4047)%>%round(2)) %>%
-        sf::as_Spatial() %>%
+        as("Spatial") %>%
         plotKML::kml_layer(subfolder.name="ProcessPolygons_2ft_Merged",
                            balloon = TRUE,
                            colour="green",alpha=.2,width=3)
